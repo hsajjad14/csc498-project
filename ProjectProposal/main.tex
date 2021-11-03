@@ -1,0 +1,64 @@
+\documentclass[twoside,11pt]{article}
+
+% Any additional packages needed should be included after jmlr2e.
+% Note that jmlr2e.sty includes epsfig, amssymb, natbib and graphicx,
+% and defines many common macros, such as 'proof' and 'example'.
+%
+% It also sets the bibliographystyle to plainnat; for more information on
+% natbib citation styles, see the natbib documentation, a copy of which
+% is archived at http://www.jmlr.org/format/natbib.pdf
+
+\usepackage{csc498project}
+
+
+
+% Short headings should be running head and authors last names
+
+\ShortHeadings{Your project title}{Your names}
+\firstpageno{1}
+
+
+\title{Your project title}
+
+\author{\name NAME \email MAIL ADDRESS \\
+       \addr STUDENT NUMBER\\
+       \AND
+      \name NAME \email MAIL ADDRESS \\
+       \addr STUDENT NUMBER}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}%   <- trailing '%' for backward compatibility of .sty file
+The abstract is a short (one paragraph) summary of your project idea and findings. It should contain all the necessary info a reader needs to have to quickly understand what you did and why it is valuable to read your paper
+\end{abstract}
+
+\section{Problem Statement}
+
+    This needs to clearly answer the “What” question.
+    It should be easy to understand for a broad audience in the area (and more specifically, the TAs ;) ).
+    Please clarify the input (i.e. domain you are working on) and the output (how do you quantify optimal decision making).
+    State clearly what tasks you are trying to solve or what kinds of algorithms you are proposing.
+    Whenever applicable, cite relevant work here \cite{chow:68,pearl:88,claas}
+
+\section{Motivation and Impact}
+
+    This should answer the “Why” question.
+    Why do this? Is there a need that you forsee, or does it answer a previously posed question?
+    And more importantly, this should answer the “So What” question? What changes if your proposed solution actually works?
+
+\section{Intuition}
+
+    This should answer the “How” question.
+    State clearly how you are going to design your experiments and what techniques you are using, or what components your novel environments will have.
+
+
+
+
+% Manual newpage inserted to improve layout of sample file - not
+% needed in general before appendices/bibliography.
+
+\bibliography{bibliography}
+
+\end{document}
