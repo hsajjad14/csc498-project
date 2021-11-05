@@ -1,0 +1,25 @@
+breakout (brick breaker) project environment:
+  - state:
+    - 7 vector state
+      - could be 807 vector state
+    - state properties:
+      - paddle x location
+      - ball x location
+      - ball y location
+      - ball x speed
+      - ball y speed
+      - bricks left
+      - matrix represnting current bricks (20x40)
+        - (may be too difficult to use - need to maintain running representation of bricks)
+
+  - reward:
+    - +10 if ball hits paddle
+    - -10 if ball misses paddle
+    - -0.5 when paddle moves
+    - +20 when ball hits brick
+    - +100 when all bricks are destroyed
+
+  - actions (3):
+    - stay still
+    - move left
+    - move right 

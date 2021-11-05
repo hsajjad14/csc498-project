@@ -1,0 +1,68 @@
+- Learn to move/walk/run around: http://osim-rl.kidzinski.com/.
+  - documentation  http://osim-rl.kidzinski.com/docs/home/
+  - policy: actions that trigger muscle activation
+  - reward at every time-step where the body is still standing
+    - larger reward for when the body moves forward
+  - environment: http://osim-rl.kidzinski.com/docs/models/#l2runenv
+
+
+- robosuite: https://robosuite.ai/
+  - great, detailed documentation and environment https://robosuite.ai/docs/overview.html
+  - but don't know what problem, or what task I can do specifically, besides the one in
+    https://github.com/ARISE-Initiative/robosuite/tree/master/robosuite/environments/manipulation
+  - also, will it properly run on low-spec windows machine, or will I need a gpu
+
+- isaacGym https://developer.nvidia.com/isaac-gym
+  - same issue as above, what to do? what problem should I work on.
+  - https://www.youtube.com/watch?v=nleDq-oJjGk
+  - https://www.youtube.com/watch?v=1RSugmJ4_gs
+
+- metaworld: https://meta-world.github.io/
+  - train robot to play soccer
+
+- coinrun game: https://github.com/openai/coinrun
+  - interesting but not on windows
+  - https://colab.research.google.com/drive/1e2Eyl8HANzcqPheVBMbdwi3wqDv41kZt
+
+- openai gym
+  - mujoco
+    - HalfCheetah-v2
+      - problem: make 2d cheetah robot run
+      - https://github.com/openai/gym/blob/master/gym/envs/mujoco/half_cheetah.py
+    - MountainCar-v0
+      - A car is on a one-dimensional track, positioned between two "mountains".
+        The goal is to drive up the mountain on the right; however, the car's engine
+        is not strong enough to scale the mountain in a single pass. Therefore, the
+        only way to succeed is to drive back and forth to build up momentum.
+      - https://gym.openai.com/envs/MountainCar-v0/
+      - https://github.com/openai/gym/blob/master/gym/envs/classic_control/mountain_car.py
+    - BipedalWalkerHardcore-v2
+      - train bipedial robot to walk over rough terrain
+      - https://gym.openai.com/envs/BipedalWalkerHardcore-v2/
+      - https://github.com/openai/gym/blob/master/gym/envs/box2d/bipedal_walker.py
+    - CarRacing-v0
+      - https://gym.openai.com/envs/CarRacing-v0/
+      - Easiest continuous control task to learn from pixels, a top-down racing environment.
+        Discreet control is reasonable in this environment as well, on/off discretisation is fine.
+        State consists of 96x96 pixels. Reward is -0.1 every frame and +1000/N for every track
+        tile visited, where N is the total number of tiles in track. For example,
+        if you have finished in 732 frames, your reward is 1000 - 0.1*732 = 926.8 points.
+        Episode finishes when all tiles are visited.
+        Some indicators shown at the bottom of the window and the state RGB buffer.
+        From left to right: true speed, four ABS sensors, steering wheel position, gyroscope.
+      - https://github.com/openai/gym/blob/master/gym/envs/box2d/car_racing.py
+    - Humanoid-v2
+      - https://gym.openai.com/envs/Humanoid-v2/
+      - Make a three-dimensional bipedal robot walk forward as fast as possible, without falling over.
+      - https://github.com/openai/gym/blob/master/gym/envs/mujoco/humanoid.py
+
+
+
+----------------
+- make a humanoid robot hop forward on one leg
+	- use Humanoid-v2 openai gym environment
+	- 
+
+- make an agent play brick breaker
+	- get the original game code
+	- modify it to be an environment like https://towardsdatascience.com/create-your-own-reinforcement-learning-environment-beb12f4151ef
