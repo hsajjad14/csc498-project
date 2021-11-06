@@ -23,30 +23,38 @@
 \author{\name NAME \email MAIL ADDRESS \\
        \addr STUDENT NUMBER\\
        \AND
-      \name NAME \email MAIL ADDRESS \\
-       \addr STUDENT NUMBER}
+      \name Weiyu Li \email weiyu.li@mail.utoronto.ca \\
+       \addr 1003765981}
 
 \begin{document}
 
 \maketitle
 
 \begin{abstract}%   <- trailing '%' for backward compatibility of .sty file
-The abstract is a short (one paragraph) summary of your project idea and findings. It should contain all the necessary info a reader needs to have to quickly understand what you did and why it is valuable to read your paper
+\textit{
+The abstract is a short (one paragraph) summary of your project idea and findings. It should contain all the necessary info a reader needs to have to quickly understand what you did and why it is valuable to read your paper}
+
+\textit{}
 \end{abstract}
 
 \section{Problem Statement}
 
+    \textit{
     This needs to clearly answer the “What” question.
     It should be easy to understand for a broad audience in the area (and more specifically, the TAs ;) ).
     Please clarify the input (i.e. domain you are working on) and the output (how do you quantify optimal decision making).
     State clearly what tasks you are trying to solve or what kinds of algorithms you are proposing.
     Whenever applicable, cite relevant work here \cite{chow:68,pearl:88,claas}
-
+}
+\newline \newline
+We intend to implement a brick breaker game in python GUI pygame. and train a reinforcement learning agent to play the game using different algorithms taught in class and beyond (Q-learning, SARSA, TD(0)/TD(n)-learning,DQN). Finally, we want to produce different difficulty level of testing set (e.g. bricks setting) so the agent can avoid over-fitting and achieve high reward in a generalized game setting. The objective is for the agent to maximize the reward (score). 
 \section{Motivation and Impact}
-
+\textit{
     This should answer the “Why” question.
     Why do this? Is there a need that you forsee, or does it answer a previously posed question?
     And more importantly, this should answer the “So What” question? What changes if your proposed solution actually works?
+}
+Firstly, we want to compare the strength and weaknesses of different RL algorithms in our use case.
 
 \section{Intuition}
 
