@@ -14,14 +14,14 @@
 
 % Short headings should be running head and authors last names
 
-\ShortHeadings{Your project title}{Your names}
+\ShortHeadings{Atari Breakout Reinforcement Learning Environment}{Your names}
 \firstpageno{1}
 
 
-\title{Your project title}
+\title{Atari Breakout Reinforcement Learning Environment}
 
-\author{\name NAME \email MAIL ADDRESS \\
-       \addr STUDENT NUMBER\\
+\author{\name Haider Sajjad \email haider.sajjad@mail.utoronto.ca \\
+       \addr 1004076251\\
        \AND
       \name Weiyu Li \email weiyu.li@mail.utoronto.ca \\
        \addr 1003765981}
@@ -32,35 +32,21 @@
 
 \begin{abstract}%   <- trailing '%' for backward compatibility of .sty file
 \textit{
-The abstract is a short (one paragraph) summary of your project idea and findings. It should contain all the necessary info a reader needs to have to quickly understand what you did and why it is valuable to read your paper}
+Atari Breakout environment implementation and training an agent using multiple algorithms over a generated environment (changing brick layouts)}
 
-\textit{}
 \end{abstract}
 
 \section{Problem Statement}
 
-    \textit{
-    This needs to clearly answer the “What” question.
-    It should be easy to understand for a broad audience in the area (and more specifically, the TAs ;) ).
-    Please clarify the input (i.e. domain you are working on) and the output (how do you quantify optimal decision making).
-    State clearly what tasks you are trying to solve or what kinds of algorithms you are proposing.
-    Whenever applicable, cite relevant work here \cite{chow:68,pearl:88,claas}
-}
-\newline \newline
-We intend to implement a brick breaker game in python GUI pygame. and train a reinforcement learning agent to play the game using different algorithms taught in class and beyond (Q-learning, SARSA, TD(0)/TD(n)-learning,DQN). Finally, we want to produce different difficulty level of testing set (e.g. bricks setting) so the agent can avoid over-fitting and achieve high reward in a generalized game setting. The objective is for the agent to maximize the reward (score). 
+We intend to implement an atari breakout game environment and train a reinforcement learning agent to play the game. The environment will be built over-top a pygame class of the game and we add the necessary environment variables and functions. We will implement the agent to train with different algorithms taught in class and beyond (Q-learning, SARSA, TD(0)/TD(n)-learning,DQN) and compare performance. We will also aim to train the agent generally, to play atari breakout across different levels (by changing brick layout) and achieve a high score, or win the game. We will also compare the performance of the agent over multiple levels by training it over different levels (by generating different brick layouts in the environment), compared to training the agent on a single environment.
 \section{Motivation and Impact}
-\textit{
-    This should answer the “Why” question.
-    Why do this? Is there a need that you forsee, or does it answer a previously posed question?
-    And more importantly, this should answer the “So What” question? What changes if your proposed solution actually works?
-}
-Firstly, we want to compare the strength and weaknesses of different RL algorithms in our use case.
-
+We want to compare the strengths and weaknesses of different RL algorithms in our case of atari breakout, and analyze how well our agent generalizes across different environments (levels) of atari breakout. Our results may motivate strategies on more complex games by projecting our strategies on to them. This may result in more complex and better preforming ai components in video games in general.
 \section{Intuition}
-
-    This should answer the “How” question.
-    State clearly how you are going to design your experiments and what techniques you are using, or what components your novel environments will have.
-
+How we will do this is by implementing a RL environment structure (done, step, rewards, actions, reset) by implementing its variables and functions into an already built breakout game class made using pygame. A game state in our environment will have 7 components: paddle x location,  ball (x,y) location, ball (x,y) speed, bricks left, current score. \\
+The general reward mechanisms will be: +10 if ball hits paddle,  -10 if ball misses paddle, +20 when ball hits brick, +100 when all bricks are destroyed. We will experiment with these to get best performance. \\
+There are 3 actions the agent can take: stay still, move left, move right.
+\\\\
+We will implement all the algorithms we learned in class (that are applicable) and compare there performance. We will attempt to train over both generated environments (changing brick layouts) and a stationary one, and see how this affects final agent performance. We will also test our trained agent across multiple levels of breakout to analyze how well our agent learned tasks generally.
 
 
 
