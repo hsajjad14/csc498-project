@@ -1,0 +1,43 @@
+csc498 todo
+
+  1. finish the environment
+    - step function
+      - paddleUpdate
+      - ballUpdate
+      - reward
+    - rewards
+      - -0.5 for movement
+      - +5 when hitting paddle
+      - -5 when missing paddle
+      - +10 when hitting a brick
+      - +100 when all bricks destroyed
+    - reset function
+      -
+    - done variable
+      - game is done
+      - size of episode is too long
+
+
+  2. start rl algorithm implementations
+    - dqn
+    - ddqn
+    - policy gradient
+      - actor-critic
+      - reinforce
+    - deep-sarsa?
+    - value function
+      - linear function
+      - ..
+
+  3. Generate levels
+    -
+
+  4. generalize
+
+schedule
+  - friday, nov 26
+    - environment should be done
+    - dqn
+      - should done
+    - ddqn
+      - should be working on it

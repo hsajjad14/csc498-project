@@ -107,6 +107,9 @@ class Breakout:
         if keys[pygame.K_RIGHT]:
             self.goRight()
 
+    def step(action):
+        pass
+
     def main(self):
         pygame.mouse.set_visible(False)
         clock = pygame.time.Clock()
