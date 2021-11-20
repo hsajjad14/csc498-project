@@ -6,10 +6,11 @@ class Breakout:
     def __init__(self):
         self.screen = pygame.display.set_mode((800, 600))
         self.blocks = []
-        self.paddle = [[pygame.Rect(300, 500, 20, 10), 120],
-                [pygame.Rect(320, 500, 20, 10),100],
-                [pygame.Rect(340, 500, 20, 10),80],
-                [pygame.Rect(360, 500, 20, 10),45],
+        self.startingPaddleLocations = [300, 320, 340, 360]
+        self.paddle = [[pygame.Rect(self.startingPaddleLocations[0], 500, 20, 10), 120],
+                [pygame.Rect(self.startingPaddleLocations[1], 500, 20, 10),100],
+                [pygame.Rect(self.startingPaddleLocations[2], 500, 20, 10),80],
+                [pygame.Rect(self.startingPaddleLocations[3], 500, 20, 10),45],
         ]
         self.ball = pygame.Rect(300, 490, 5, 5)
         self.direction = -1
@@ -42,6 +43,7 @@ class Breakout:
 
         # rl environment variables
         self.rewards = 0
+        self.done = False
 
     def createBlocks(self):
         self.blocks = []
@@ -83,8 +85,10 @@ class Breakout:
                     # ball hit paddle
                     ballHitPaddle = True
                     break
+
             if ballHitPaddle:
-                self.rewards += 5
+                self.rewards += 3
+
 
             check = self.ball.collidelist(self.blocks)
             if check != -1:
@@ -98,30 +102,31 @@ class Breakout:
                 self.yDirection *= -1
                 self.score += 1
 
+            if self.score == len(self.blocks):
+                print("all blocks destroyed - you won")
+                self.rewards += 800
+                self.done = True
+
             if self.ball.y > 600:
                 # ball misses paddle
                 print("missed paddle")
-                self.rewards -= 5
+                self.rewards -= 3
+                self.done = True
 
-                self.createBlocks()
-                self.score = 0
-                self.ball.x = self.paddle[1][0].x
-                self.ball.y = 490
-                self.yDirection = self.direction = -1
+                self.reset()
 
     # actions
     def goLeft(self):
         vx=-10
         self.updatePaddleLocation(vx)
-        self.rewards -= 0.5
+        self.rewards -= 0.2
 
     def goRight(self):
         vx=10
         self.updatePaddleLocation(vx)
-        self.rewards -= 0.5
+        self.rewards -= 0.2
 
     def updatePaddleLocation(self, move_x):
-
         on = 0
         # check if paddle is in dimension of the screen before updating
         if move_x + self.paddle[0][0].x > -5 and move_x + self.paddle[-1][0].x < self.screen.get_width():
@@ -130,18 +135,69 @@ class Breakout:
                 on += 1
 
     def paddleUpdate(self):
-
         keys=pygame.key.get_pressed()
         if keys[pygame.K_LEFT]:
             self.goLeft()
         if keys[pygame.K_RIGHT]:
             self.goRight()
 
-    def step(action):
-        pass
+    # return array representing game state
+    def getCurrentState(self):
+        # state = [paddle x-location, ball x-location, ball y-location,
+        #           ball x-speed, ball y-speed, bricks left]
+        #
+        # not using current score in state because it correlates with  bricks left
+        # ie. bricks_left = total_bricks - score
 
-    def reset():
-        pass
+        # using x-location of middle paddle
+        paddleLocation = self.paddle[1][0].x
+        ballXLocation = self.ball.x
+        ballYLocation = self.ball.y
+        speed = self.speeds[self.angle]
+        ballXSpeed = speed[0]
+        ballYSpeed = speed[1]
+        bricksLeft = len(self.blocks) - self.score
+
+        return [paddleLocation, ballXLocation, ballYLocation, ballXSpeed, ballYSpeed, bricksLeft]
+
+    # one step in the environment
+    # return state, rewards, done
+    def step(self, action):
+        self.rewards = 0
+        self.done = False
+
+        if action == 0:
+            self.goLeft()
+        elif action == 1:
+            # go right
+            self.goRight()
+        elif action == 2:
+            # do nothing
+            pass
+
+        self.ballUpdate()
+
+        currentState = self.getCurrentState()
+
+        return currentState, self.rewards, self.done
+
+    def resetPaddleLocation(self):
+        for i in range(len(self.paddle)):
+            paddle = self.paddle[i][0]
+            paddle.x = self.startingPaddleLocations[i]
+
+    def reset(self):
+        self.createBlocks()
+        self.resetPaddleLocation()
+        self.score = 0
+        self.ball.x = self.paddle[1][0].x
+        self.ball.y = 490
+        self.yDirection = self.direction = -1
+
+        currentState = self.getCurrentState()
+
+        return currentState
+
 
     def main(self):
         pygame.mouse.set_visible(False)
