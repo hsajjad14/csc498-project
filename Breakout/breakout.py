@@ -15,11 +15,20 @@ class Breakout:
         self.direction = -1
         self.yDirection = -1
         self.angle = 80
+
+        # changed speeds here, when increasing levels increase this speed and examine preformance of agent
+        # original were:
+        # self.speeds = {
+        #     120:(-10, -3),
+        #     100:(-10, -8),
+        #     80:(10, -8),
+        #     45:(10, -3),
+        # }
         self.speeds = {
-            120:(-10, -3),
-            100:(-10, -8),
-            80:(10, -8),
-            45:(10, -3),
+            120:(-4, -3),
+            100:(-4, -4),
+            80:(4, -4),
+            45:(4, -3),
         }
         self.swap = {
             120:45,
@@ -30,6 +39,9 @@ class Breakout:
         pygame.font.init()
         self.font = pygame.font.SysFont("Arial", 25)
         self.score = 0
+
+        # rl environment variables
+        self.rewards = 0
 
     def createBlocks(self):
         self.blocks = []
@@ -61,20 +73,36 @@ class Breakout:
                 self.ball.y = 1
                 self.yDirection *= -1
 
+            ballHitPaddle = False
             for paddle in self.paddle:
                 if paddle[0].colliderect(self.ball):
                     self.angle = paddle[1]
                     self.direction = -1
                     self.yDirection = -1
+
+                    # ball hit paddle
+                    ballHitPaddle = True
                     break
+            if ballHitPaddle:
+                self.rewards += 5
+
             check = self.ball.collidelist(self.blocks)
             if check != -1:
+                # ball hits brick
+                print("brick hit")
+                self.rewards += 10
+
                 block = self.blocks.pop(check)
                 if xMovement:
                     self.direction *= -1
                 self.yDirection *= -1
                 self.score += 1
+
             if self.ball.y > 600:
+                # ball misses paddle
+                print("missed paddle")
+                self.rewards -= 5
+
                 self.createBlocks()
                 self.score = 0
                 self.ball.x = self.paddle[1][0].x
@@ -85,10 +113,12 @@ class Breakout:
     def goLeft(self):
         vx=-10
         self.updatePaddleLocation(vx)
+        self.rewards -= 0.5
 
     def goRight(self):
         vx=10
         self.updatePaddleLocation(vx)
+        self.rewards -= 0.5
 
     def updatePaddleLocation(self, move_x):
 
@@ -108,6 +138,9 @@ class Breakout:
             self.goRight()
 
     def step(action):
+        pass
+
+    def reset():
         pass
 
     def main(self):

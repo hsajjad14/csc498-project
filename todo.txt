@@ -7,10 +7,15 @@ csc498 todo
       - reward
     - rewards
       - -0.5 for movement
+        - done
       - +5 when hitting paddle
+        - done
       - -5 when missing paddle
+        - done
       - +10 when hitting a brick
+        - done
       - +100 when all bricks destroyed
+        - not done yet
     - reset function
       -
     - done variable
