@@ -115,6 +115,8 @@ class Breakout:
 
                 self.reset()
 
+    # environment functions
+    
     # actions
     def goLeft(self):
         vx=-10
@@ -181,11 +183,13 @@ class Breakout:
 
         return currentState, self.rewards, self.done
 
+    # reset paddle to middle location
     def resetPaddleLocation(self):
         for i in range(len(self.paddle)):
             paddle = self.paddle[i][0]
             paddle.x = self.startingPaddleLocations[i]
 
+    # reset environment to original state
     def reset(self):
         self.createBlocks()
         self.resetPaddleLocation()
@@ -198,6 +202,21 @@ class Breakout:
 
         return currentState
 
+    # render agent after training to see how it plays
+    def render(self):
+        # unsure about clock
+        clock = pygame.time.Clock()
+        clock.tick(60)
+
+        self.screen.fill((0, 0, 0))
+
+        for block in self.blocks:
+            pygame.draw.rect(self.screen, (255,255,255), block)
+        for paddle in self.paddle:
+            pygame.draw.rect(self.screen, (255,255,255), paddle[0])
+        pygame.draw.rect(self.screen, (255,255,255), self.ball)
+        self.screen.blit(self.font.render(str(self.score), -1, (255,255,255)), (400, 550))
+        pygame.display.update()
 
     def main(self):
         pygame.mouse.set_visible(False)

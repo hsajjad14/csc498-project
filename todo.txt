@@ -23,6 +23,10 @@ csc498 todo
       - size of episode is too long
       - done
 
+    - render function
+      - only needed for testing
+      - done i think
+
 
   2. start rl algorithm implementations
     - dqn
