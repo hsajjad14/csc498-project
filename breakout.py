@@ -116,7 +116,7 @@ class Breakout:
                 self.reset()
 
     # environment functions
-    
+
     # actions
     def goLeft(self):
         vx=-10
@@ -217,6 +217,9 @@ class Breakout:
         pygame.draw.rect(self.screen, (255,255,255), self.ball)
         self.screen.blit(self.font.render(str(self.score), -1, (255,255,255)), (400, 550))
         pygame.display.update()
+
+    def make(self):
+        self.createBlocks()
 
     def main(self):
         pygame.mouse.set_visible(False)
