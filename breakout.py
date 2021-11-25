@@ -1,4 +1,5 @@
 import pygame
+import numpy as np
 from pygame.locals import *
 import sys
 
@@ -42,6 +43,10 @@ class Breakout:
         self.score = 0
 
         # rl environment variables
+        self.observation_space = 6
+        self.action_space = 3
+        self.min_action = 0
+        self.max_action = 2
         self.rewards = 0
         self.done = False
 
@@ -87,14 +92,14 @@ class Breakout:
                     break
 
             if ballHitPaddle:
-                self.rewards += 3
+                self.rewards += 10
 
 
             check = self.ball.collidelist(self.blocks)
             if check != -1:
                 # ball hits brick
-                print("brick hit")
-                self.rewards += 10
+                # print("brick hit")
+                self.rewards += 2
 
                 block = self.blocks.pop(check)
                 if xMovement:
@@ -104,13 +109,13 @@ class Breakout:
 
             if self.score == len(self.blocks):
                 print("all blocks destroyed - you won")
-                self.rewards += 800
+                self.rewards += 1000
                 self.done = True
 
             if self.ball.y > 600:
                 # ball misses paddle
-                print("missed paddle")
-                self.rewards -= 3
+                # print("missed paddle")
+                self.rewards -= 10
                 self.done = True
 
                 self.reset()
@@ -160,7 +165,7 @@ class Breakout:
         ballYSpeed = speed[1]
         bricksLeft = len(self.blocks) - self.score
 
-        return [paddleLocation, ballXLocation, ballYLocation, ballXSpeed, ballYSpeed, bricksLeft]
+        return np.array([paddleLocation, ballXLocation, ballYLocation, ballXSpeed, ballYSpeed, bricksLeft])
 
     # one step in the environment
     # return state, rewards, done
