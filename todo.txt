@@ -51,3 +51,10 @@ schedule
       - should done
     - ddqn
       - should be working on it
+
+
+  - Monday 29
+    - dqn working
+
+  - by Dec 3
+    - get dqn, reinforce, actor-critic, ddqn working

@@ -5,8 +5,7 @@ import sys
 
 class Breakout:
     def __init__(self):
-        # don't need this for training
-        # self.screen = pygame.display.set_mode((800, 600))
+        self.screen = pygame.display.set_mode((800, 600))
         self.blocks = []
         self.startingPaddleLocations = [300, 320, 340, 360]
         self.paddle = [[pygame.Rect(self.startingPaddleLocations[0], 500, 20, 10), 120],
@@ -123,19 +122,6 @@ class Breakout:
 
     # environment functions
 
-    # function -2x+1000 as reward where x = absolute distance between paddleLocation and ballXLocation
-    # so smaller it is => more reward
-    def rewardForPaddleNearBallXAxis(self):
-        paddleLocation = self.paddle[1][0].x
-        ballXLocation = self.ball.x
-
-        distance = abs(paddleLocation - ballXLocation)
-        def f(x):
-            return -2*x + 1000
-
-        reward = f(distance)
-        self.rewards += reward
-
     # actions
     def goLeft(self):
         vx=-10
@@ -150,9 +136,7 @@ class Breakout:
     def updatePaddleLocation(self, move_x):
         on = 0
         # check if paddle is in dimension of the screen before updating
-        # print(self.screen.get_width()) = 800
-        # if move_x + self.paddle[0][0].x > -5 and move_x + self.paddle[-1][0].x < self.screen.get_width():
-        if move_x + self.paddle[0][0].x > -5 and move_x + self.paddle[-1][0].x < 800:
+        if move_x + self.paddle[0][0].x > -5 and move_x + self.paddle[-1][0].x < self.screen.get_width():
             for p in self.paddle:
                 p[0].x = p[0].x + move_x
                 on += 1
@@ -198,13 +182,7 @@ class Breakout:
             # do nothing
             pass
 
-        # or here?
-        # self.rewardForPaddleNearBallXAxis()
-
         self.ballUpdate()
-
-        # here?
-        self.rewardForPaddleNearBallXAxis()
 
         currentState = self.getCurrentState()
 
@@ -231,20 +209,19 @@ class Breakout:
 
     # render agent after training to see how it plays
     def render(self):
-        pass
         # unsure about clock
-        # clock = pygame.time.Clock()
-        # clock.tick(60)
-        #
-        # self.screen.fill((0, 0, 0))
-        #
-        # for block in self.blocks:
-        #     pygame.draw.rect(self.screen, (255,255,255), block)
-        # for paddle in self.paddle:
-        #     pygame.draw.rect(self.screen, (255,255,255), paddle[0])
-        # pygame.draw.rect(self.screen, (255,255,255), self.ball)
-        # self.screen.blit(self.font.render(str(self.score), -1, (255,255,255)), (400, 550))
-        # pygame.display.update()
+        clock = pygame.time.Clock()
+        clock.tick(60)
+
+        self.screen.fill((0, 0, 0))
+
+        for block in self.blocks:
+            pygame.draw.rect(self.screen, (255,255,255), block)
+        for paddle in self.paddle:
+            pygame.draw.rect(self.screen, (255,255,255), paddle[0])
+        pygame.draw.rect(self.screen, (255,255,255), self.ball)
+        self.screen.blit(self.font.render(str(self.score), -1, (255,255,255)), (400, 550))
+        pygame.display.update()
 
     def make(self):
         self.createBlocks()
@@ -258,17 +235,17 @@ class Breakout:
             for event in pygame.event.get():
                 if event.type == QUIT:
                     sys.exit()
-            # self.screen.fill((0, 0, 0))
+            self.screen.fill((0, 0, 0))
             self.paddleUpdate()
             self.ballUpdate()
 
-            # for block in self.blocks:
-            #     pygame.draw.rect(self.screen, (255,255,255), block)
-            # for paddle in self.paddle:
-            #     pygame.draw.rect(self.screen, (255,255,255), paddle[0])
-            # pygame.draw.rect(self.screen, (255,255,255), self.ball)
-            # self.screen.blit(self.font.render(str(self.score), -1, (255,255,255)), (400, 550))
-            # pygame.display.update()
+            for block in self.blocks:
+                pygame.draw.rect(self.screen, (255,255,255), block)
+            for paddle in self.paddle:
+                pygame.draw.rect(self.screen, (255,255,255), paddle[0])
+            pygame.draw.rect(self.screen, (255,255,255), self.ball)
+            self.screen.blit(self.font.render(str(self.score), -1, (255,255,255)), (400, 550))
+            pygame.display.update()
 
 
 if __name__ == "__main__":
