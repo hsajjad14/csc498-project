@@ -281,15 +281,16 @@ class AgentReinforce():
         self.model = model(observation_space, action_space)
         self.opt = tf.keras.optimizers.Adam(learning_rate=0.001)
         self.gamma = 1
+        self.episodes = 1
+        self.rewards = []
+        self.states = []
+        self.actions = []
 
     def act(self,state):
         prob = self.model(np.array([state]))
         dist = tfp.distributions.Categorical(probs=prob, dtype=tf.float32)
         action = dist.sample()
-#         print(prob)
-#         print(dist)
-#         print(action)
-#         print("---")
+        # print("probabillity of actions = ", prob)
         if int(action.numpy()[0]) > 2:
             return 2
         elif int(action.numpy()[0]) < 0:
@@ -298,34 +299,36 @@ class AgentReinforce():
         return int(action.numpy()[0])
 
     def a_loss(self,prob, action, reward):
-#         print(prob)
-#         print(action)
-#         action_list = [0,1,2]
-#         clipped_action = roundToNearest(action_list, action)
-#         print("action and clipped action: ", action, clipped_action)
-#         print(reward)
-#         print("-------")
         dist = tfp.distributions.Categorical(probs=prob, dtype=tf.float32)
         log_prob = dist.log_prob(action)
         loss = -log_prob*reward
         return loss
 
     def train(self, states, rewards, actions):
-        sum_reward = 0
-        discnt_rewards = []
-        rewards.reverse()
-        for r in rewards:
-            sum_reward = r + self.gamma*sum_reward
-            discnt_rewards.append(sum_reward)
-        discnt_rewards.reverse()
+        all_states = tf.convert_to_tensor(reinforce_agent.states)
+        all_actions = tf.convert_to_tensor(reinforce_agent.actions)
+        all_rewards = tf.convert_to_tensor(reinforce_agent.rewards)
+        all_rewards = tf.reshape(all_rewards, [-1])
 
-        for state, reward, action in zip(states, discnt_rewards, actions):
-#             print("s" , action)
-            with tf.GradientTape() as tape:
-                p = self.model(np.array([state]), training=True)
-                loss = self.a_loss(p, action, reward)
-                grads = tape.gradient(loss, self.model.trainable_variables)
-                self.opt.apply_gradients(zip(grads, self.model.trainable_variables))
+        logits = self.model(np.array(all_states))
+        og_logits = logits
+        logits = tf.transpose(logits)
+        all_actions = tf.reshape(all_actions, [-1])
+        negative_likelihoods = tf.nn.softmax_cross_entropy_with_logits(labels=all_actions, logits=logits)
+        loss = tf.reduce_mean(negative_likelihoods)
+        loss = loss * tf.reduce_sum(all_rewards)
+        print("one state prob dist for actions = ", og_logits[1])
+        print("loss in this episode = ", loss)
+
+        with tf.GradientTape() as tape:
+            gradients = tape.gradient(loss, self.model.trainable_variables)
+            for g in gradients:
+                if g:
+                    self.opt.apply_gradients(zip(g, self.model.trainable_variables))
+
+
+
+
 
 
 # In[8]:
@@ -333,8 +336,8 @@ class AgentReinforce():
 
 breakout_env.reset()
 reinforce_agent = AgentReinforce(breakout_env.observation_space, breakout_env.action_space)
-episodes = 1000
-epsilon = 0.9*100
+episodes = 10000
+# epsilon = 0.9*100
 for e in range(1, episodes+1):
 
     done = False
@@ -345,13 +348,7 @@ for e in range(1, episodes+1):
     actions = []
     for i in range(1500):
         #env.render()
-        # alternate
-        p = np.random.random()
-        if p < 1 - epsilon:
-            action = reinforce_agent.act(state)
-        else:
-            action = np.random.randint(3)
-#         print("b", action)
+        action = reinforce_agent.act(state)
         next_state, reward, done = breakout_env.step(action)
         rewards.append(reward)
         states.append(state)
@@ -359,12 +356,12 @@ for e in range(1, episodes+1):
         state = next_state
         total_reward += reward
 
-#         if done:
-#             print(state)
-#             print(action)
-#             print(reward)
+    reinforce_agent.episodes += 1
+    reinforce_agent.states += states
+    reinforce_agent.rewards += rewards
+    reinforce_agent.actions += actions
     reinforce_agent.train(states, rewards, actions)
-    epsilon = (epsilon/e)*100
+    # epsilon = (epsilon/e)*100
     #print("total step for this episord are {}".format(t))
     print("total reward after {} steps is {}".format(e, total_reward))
 

@@ -100,7 +100,7 @@ class Breakout:
             if check != -1:
                 # ball hits brick
                 # print("brick hit")
-                self.rewards += 2
+                # self.rewards += 2
 
                 block = self.blocks.pop(check)
                 if xMovement:
@@ -110,7 +110,7 @@ class Breakout:
 
             if self.score == len(self.blocks):
                 print("all blocks destroyed - you won")
-                self.rewards += 1000
+                self.rewards += 10000
                 self.done = True
 
             if self.ball.y > 600:
@@ -123,17 +123,47 @@ class Breakout:
 
     # environment functions
 
-    # function -2x+1000 as reward where x = absolute distance between paddleLocation and ballXLocation
+    # function -scale*x + 10  as reward where x = absolute distance between paddleLocation and ballXLocation
     # so smaller it is => more reward
+    # paddle moves by 10 in every action
+    # so |f(x) - f(x +- 10)| > 0.2
+    # reward needs to be greater than movement penalty if we want to move paddle
     def rewardForPaddleNearBallXAxis(self):
-        paddleLocation = self.paddle[1][0].x
+        paddleXLocation = self.paddle[1][0].x
+        paddleYLocation = self.paddle[1][0].y
         ballXLocation = self.ball.x
+        ballYLocation = self.ball.y
 
-        distance = abs(paddleLocation - ballXLocation)
-        def f(x):
-            return -2*x + 1000
+        distance = abs(paddleXLocation - ballXLocation)
 
-        reward = f(distance)
+        # the closer the ball is to the paddle in the y axis
+        # the more it matters that we are close to the ball in the x axis
+        # so smaller distanceYAxis => scale by more reward
+        # ballYLocation can range from 0 - 600
+        distanceYAxis = abs(ballYLocation - paddleYLocation)
+        scale = 1
+        if distanceYAxis < 1:
+            scale = 10
+        else:
+            scale = 10/distanceYAxis
+
+
+        # https://www.desmos.com/calculator play with -scale*x + 10
+        # for 6/distanceYAxis
+        # ex ballY = 100 paddleY = 500 => scale = 0.015
+        # ex ballY = 200 paddleY = 500 => scale = 0.02
+        # ex ballY = 300 paddleY = 500 => scale = 0.03
+        # ex ballY = 450 paddleY = 500 => scale = 0.12
+        def f(x, scaleBy):
+            return -x + 10
+
+            # return -scaleBy*x + 10
+
+        # if distanceYAxis is large don't give it any reward
+        # if distanceYAxis > 150:
+        #     reward = 0
+        # else:
+        reward = f(distance, scale)
         self.rewards += reward
 
     # actions
@@ -198,13 +228,13 @@ class Breakout:
             # do nothing
             pass
 
-        # or here?
-        # self.rewardForPaddleNearBallXAxis()
+        # here?
+        self.rewardForPaddleNearBallXAxis()
 
         self.ballUpdate()
 
-        # here?
-        self.rewardForPaddleNearBallXAxis()
+        # or here?
+        # self.rewardForPaddleNearBallXAxis()
 
         currentState = self.getCurrentState()
 
