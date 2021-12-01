@@ -315,9 +315,12 @@ class AgentReinforce():
         logits = tf.transpose(logits)
         all_actions = tf.reshape(all_actions, [-1])
         negative_likelihoods = tf.nn.softmax_cross_entropy_with_logits(labels=all_actions, logits=logits)
+        # print(negative_likelihoods.shape, tf.convert_to_tensor(rewards).shape)
+
         loss = tf.reduce_mean(negative_likelihoods)
-        loss = loss * tf.reduce_sum(all_rewards)
-        print("one state prob dist for actions = ", og_logits[1])
+        loss = loss * tf.reduce_sum(all_rewards) / 70000000000
+        # loss = loss * sum(rewards) / 7000000
+        print("\none state prob dist for actions = ", og_logits[1])
         print("loss in this episode = ", loss)
 
         with tf.GradientTape() as tape:
@@ -325,11 +328,6 @@ class AgentReinforce():
             for g in gradients:
                 if g:
                     self.opt.apply_gradients(zip(g, self.model.trainable_variables))
-
-
-
-
-
 
 # In[8]:
 

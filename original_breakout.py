@@ -201,7 +201,11 @@ class Breakout:
         self.score = 0
         self.ball.x = self.paddle[1][0].x
         self.ball.y = 490
-        self.yDirection = self.direction = -1
+        # self.yDirection = self.direction = -1
+        # self.yDirection = self.direction = 1
+        self.direction = -1
+        self.yDirection = -1
+        self.angle = 80
 
         currentState = self.getCurrentState()
 
