@@ -279,7 +279,7 @@ class model(tf.keras.Model):
 class AgentReinforce():
     def __init__(self, observation_space, action_space):
         self.model = model(observation_space, action_space)
-        self.opt = tf.keras.optimizers.Adam(learning_rate=0.001)
+        self.opt = tf.keras.optimizers.Adam(learning_rate=0.00001)
         self.gamma = 1
         self.episodes = 1
         self.rewards = []
@@ -298,44 +298,113 @@ class AgentReinforce():
 
         return int(action.numpy()[0])
 
-    def a_loss(self,prob, action, reward):
+    def a_loss(self, prob, action, reward):
         dist = tfp.distributions.Categorical(probs=prob, dtype=tf.float32)
         log_prob = dist.log_prob(action)
+        # print("log_prob",log_prob, "action: ", action, "dist: ", dist, "prob: ", prob)
         loss = -log_prob*reward
         return loss
 
     def train(self, states, rewards, actions):
+        sum_reward = 0
+        discnt_rewards = []
+        rewards.reverse()
+        for r in rewards:
+            sum_reward = r + self.gamma*sum_reward
+            discnt_rewards.append(sum_reward)
+        discnt_rewards.reverse()
+
         all_states = tf.convert_to_tensor(reinforce_agent.states)
         all_actions = tf.convert_to_tensor(reinforce_agent.actions)
         all_rewards = tf.convert_to_tensor(reinforce_agent.rewards)
         all_rewards = tf.reshape(all_rewards, [-1])
 
-        logits = self.model(np.array(all_states))
-        og_logits = logits
-        logits = tf.transpose(logits)
-        all_actions = tf.reshape(all_actions, [-1])
-        negative_likelihoods = tf.nn.softmax_cross_entropy_with_logits(labels=all_actions, logits=logits)
-        # print(negative_likelihoods.shape, tf.convert_to_tensor(rewards).shape)
-
-        loss = tf.reduce_mean(negative_likelihoods)
-        loss = loss * tf.reduce_sum(all_rewards) / 70000000000
-        # loss = loss * sum(rewards) / 7000000
-        print("\none state prob dist for actions = ", og_logits[1])
-        print("loss in this episode = ", loss)
-
         with tf.GradientTape() as tape:
-            gradients = tape.gradient(loss, self.model.trainable_variables)
-            for g in gradients:
-                if g:
-                    self.opt.apply_gradients(zip(g, self.model.trainable_variables))
+
+            logits = self.model(np.array(states))
+            og_logits = logits
+            logits = tf.transpose(logits)
+            # all_actions = tf.reshape(all_actions, [-1])
+            negative_likelihoods = tf.nn.softmax_cross_entropy_with_logits(labels=actions, logits=logits)
+
+            # logits = self.model(np.array(states), training=True)
+            # og_logits = logits
+            # logits = tf.transpose(logits)
+            print("probabilty of an action sample = ", og_logits[1])
+            # negative_likelihoods = tf.nn.softmax_cross_entropy_with_logits(labels=actions, logits=logits)
+            # print("negative_likelihoods shape = ", negative_likelihoods.shape)
+
+            loss = -tf.reduce_mean(tf.math.log(negative_likelihoods) * sum(rewards))
+
+            print("loss: ", loss)
+        gradients = tape.gradient(loss, self.model.trainable_variables)
+        # print("gradients shape = ", len(gradients))
+        self.opt.apply_gradients(zip(gradients, self.model.trainable_variables))
+
+
+#         for state, reward, action in zip(states, discnt_rewards, actions):
+# #             print("s" , action)
+#             with tf.GradientTape() as tape:
+#                 p = self.model(np.array([state]), training=True)
+#                 loss = self.a_loss(p, action, reward)
+#                 # l += tf.Variable(loss)
+#             # print("loss = ", loss)
+#             grads = tape.gradient(loss, self.model.trainable_variables)
+#             # print("gradient = ", grads)
+#             self.opt.apply_gradients(zip(grads, self.model.trainable_variables))
+
+        # print("loss: ", l)
+        # all_states = tf.convert_to_tensor(reinforce_agent.states)
+        # all_actions = tf.convert_to_tensor(reinforce_agent.actions)
+        # all_rewards = tf.convert_to_tensor(reinforce_agent.rewards)
+        # all_rewards = tf.reshape(all_rewards, [-1])
+
+        # # logits = self.model(np.array(all_states))
+        # logits = self.model(np.array([states]))
+        # og_logits = logits
+        # logits = tf.transpose(logits)
+        # # all_actions = tf.reshape(all_actions, [-1])
+        # negative_likelihoods = tf.nn.softmax_cross_entropy_with_logits(labels=actions, logits=logits)
+        # # print(negative_likelihoods.shape, tf.convert_to_tensor(rewards).shape)
+        #
+        # loss = tf.reduce_mean(negative_likelihoods)
+        # # loss = loss * tf.reduce_sum(all_rewards) / 70000000000
+        # loss = loss * sum(rewards) / 30000000
+        # print("\none state prob dist for actions = ", og_logits[0][1])
+        # print("loss in this episode = ", loss)
+
+        # with tf.GradientTape() as tape:
+        #     # logits = self.model(np.array(all_states))
+        #     logits = self.model(np.array([states]))
+        #     og_logits = logits
+        #     logits = tf.transpose(logits)
+        #     # all_actions = tf.reshape(all_actions, [-1])
+        #     negative_likelihoods = tf.nn.softmax_cross_entropy_with_logits(labels=actions, logits=logits)
+        #     # print(negative_likelihoods.shape, tf.convert_to_tensor(rewards).shape)
+        #
+        #     loss = tf.reduce_mean(negative_likelihoods)
+        #     # loss = loss * tf.reduce_sum(all_rewards) / 70000000000
+        #     # loss = loss * sum(rewards) / 30000000
+        #     # print("\none state prob dist for actions = ", og_logits[0][1])
+        #     print("loss in this episode = ", loss)
+        #     print(loss.shape)
+        #
+        # for x in range(len(self.model.trainable_variables)):
+        #     print("trainable_variables: type ", type(self.model.trainable_variables[x]), "index :", x)
+        # gradients = tape.gradient(loss, self.model.trainable_variables)
+        # print("gradients : ", gradients)
+        # self.opt.apply_gradients(gradients, self.model.trainable_variables)
+        # for g in gradients:
+        #     if g:
+        #         self.opt.apply_gradients(zip(g, self.model.trainable_variables))
 
 # In[8]:
 
 
 breakout_env.reset()
 reinforce_agent = AgentReinforce(breakout_env.observation_space, breakout_env.action_space)
-episodes = 10000
-# epsilon = 0.9*100
+episodes = 100000
+epsilon = 0.9*100
 for e in range(1, episodes+1):
 
     done = False
@@ -344,8 +413,16 @@ for e in range(1, episodes+1):
     rewards = []
     states = []
     actions = []
-    for i in range(1500):
+    for i in range(5000):
         #env.render()
+        # alternate
+        # p = np.random.random()
+        # if p < 1 - epsilon:
+            # action = reinforce_agent.act(state)
+        # else:
+            # action = np.random.randint(3)
+            # print(action)
+
         action = reinforce_agent.act(state)
         next_state, reward, done = breakout_env.step(action)
         rewards.append(reward)
@@ -354,12 +431,13 @@ for e in range(1, episodes+1):
         state = next_state
         total_reward += reward
 
+    # print("----- \t actions = ",actions, "\n")
     reinforce_agent.episodes += 1
     reinforce_agent.states += states
     reinforce_agent.rewards += rewards
     reinforce_agent.actions += actions
     reinforce_agent.train(states, rewards, actions)
-    # epsilon = (epsilon/e)*100
+    epsilon = (epsilon/e)*100
     #print("total step for this episord are {}".format(t))
     print("total reward after {} steps is {}".format(e, total_reward))
 
