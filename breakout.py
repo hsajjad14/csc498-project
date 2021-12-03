@@ -155,7 +155,7 @@ class Breakout:
         # ex ballY = 300 paddleY = 500 => scale = 0.03
         # ex ballY = 450 paddleY = 500 => scale = 0.12
         def f(x, scaleBy):
-            return -x + 10
+            return -0.2*x + 10
 
             # return -scaleBy*x + 10
 
@@ -170,12 +170,12 @@ class Breakout:
     def goLeft(self):
         vx=-10
         self.updatePaddleLocation(vx)
-        self.rewards -= 0.2
+        self.rewards -= 0.5
 
     def goRight(self):
         vx=10
         self.updatePaddleLocation(vx)
-        self.rewards -= 0.2
+        self.rewards -= 0.5
 
     def updatePaddleLocation(self, move_x):
         on = 0
@@ -253,7 +253,11 @@ class Breakout:
         self.score = 0
         self.ball.x = self.paddle[1][0].x
         self.ball.y = 490
-        self.yDirection = self.direction = -1
+        # self.yDirection = self.direction = -1
+        # self.yDirection = self.direction
+        self.direction = -1
+        self.yDirection = -1
+        self.angle = 80
 
         currentState = self.getCurrentState()
 
