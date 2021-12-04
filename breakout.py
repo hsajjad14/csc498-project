@@ -6,7 +6,7 @@ import sys
 class Breakout:
     def __init__(self):
         # don't need this for training
-        # self.screen = pygame.display.set_mode((800, 600))
+        self.screen = pygame.display.set_mode((800, 600))
         self.blocks = []
         self.startingPaddleLocations = [300, 320, 340, 360]
         self.paddle = [[pygame.Rect(self.startingPaddleLocations[0], 500, 20, 10), 120],
@@ -155,7 +155,7 @@ class Breakout:
         # ex ballY = 300 paddleY = 500 => scale = 0.03
         # ex ballY = 450 paddleY = 500 => scale = 0.12
         def f(x, scaleBy):
-            return -0.2*x + 10
+            return -0.1*x+8
 
             # return -scaleBy*x + 10
 
@@ -170,12 +170,12 @@ class Breakout:
     def goLeft(self):
         vx=-10
         self.updatePaddleLocation(vx)
-        self.rewards -= 0.5
+        # self.rewards -= 0.5
 
     def goRight(self):
         vx=10
         self.updatePaddleLocation(vx)
-        self.rewards -= 0.5
+        # self.rewards -= 0.5
 
     def updatePaddleLocation(self, move_x):
         on = 0
@@ -229,12 +229,12 @@ class Breakout:
             pass
 
         # here?
-        self.rewardForPaddleNearBallXAxis()
+        # self.rewardForPaddleNearBallXAxis()
 
         self.ballUpdate()
 
         # or here?
-        # self.rewardForPaddleNearBallXAxis()
+        self.rewardForPaddleNearBallXAxis()
 
         currentState = self.getCurrentState()
 
@@ -265,20 +265,20 @@ class Breakout:
 
     # render agent after training to see how it plays
     def render(self):
-        pass
+        # pass
         # unsure about clock
-        # clock = pygame.time.Clock()
-        # clock.tick(60)
-        #
-        # self.screen.fill((0, 0, 0))
-        #
-        # for block in self.blocks:
-        #     pygame.draw.rect(self.screen, (255,255,255), block)
-        # for paddle in self.paddle:
-        #     pygame.draw.rect(self.screen, (255,255,255), paddle[0])
-        # pygame.draw.rect(self.screen, (255,255,255), self.ball)
-        # self.screen.blit(self.font.render(str(self.score), -1, (255,255,255)), (400, 550))
-        # pygame.display.update()
+        clock = pygame.time.Clock()
+        clock.tick(60)
+
+        self.screen.fill((0, 0, 0))
+
+        for block in self.blocks:
+            pygame.draw.rect(self.screen, (255,255,255), block)
+        for paddle in self.paddle:
+            pygame.draw.rect(self.screen, (255,255,255), paddle[0])
+        pygame.draw.rect(self.screen, (255,255,255), self.ball)
+        self.screen.blit(self.font.render(str(self.score), -1, (255,255,255)), (400, 550))
+        pygame.display.update()
 
     def make(self):
         self.createBlocks()
@@ -306,4 +306,9 @@ class Breakout:
 
 
 if __name__ == "__main__":
-    Breakout().main()
+    # Breakout().main()
+    b_env = Breakout()
+    b_env.make()
+    while(True):
+        print(b_env.step(np.random.randint(3)))
+        b_env.render()
