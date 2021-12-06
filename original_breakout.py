@@ -5,6 +5,7 @@ import sys
 
 class Breakout:
     def __init__(self):
+        # don't need this for training
         self.screen = pygame.display.set_mode((800, 600))
         self.blocks = []
         self.startingPaddleLocations = [300, 320, 340, 360]
@@ -99,7 +100,7 @@ class Breakout:
             if check != -1:
                 # ball hits brick
                 # print("brick hit")
-                self.rewards += 2
+                # self.rewards += 2
 
                 block = self.blocks.pop(check)
                 if xMovement:
@@ -109,7 +110,7 @@ class Breakout:
 
             if self.score == len(self.blocks):
                 print("all blocks destroyed - you won")
-                self.rewards += 1000
+                self.rewards += 10000
                 self.done = True
 
             if self.ball.y > 600:
@@ -122,21 +123,66 @@ class Breakout:
 
     # environment functions
 
+    # function -scale*x + 10  as reward where x = absolute distance between paddleLocation and ballXLocation
+    # so smaller it is => more reward
+    # paddle moves by 10 in every action
+    # so |f(x) - f(x +- 10)| > 0.2
+    # reward needs to be greater than movement penalty if we want to move paddle
+    def rewardForPaddleNearBallXAxis(self):
+        paddleXLocation = self.paddle[1][0].x
+        paddleYLocation = self.paddle[1][0].y
+        ballXLocation = self.ball.x
+        ballYLocation = self.ball.y
+
+        distance = abs(paddleXLocation - ballXLocation)
+
+        # the closer the ball is to the paddle in the y axis
+        # the more it matters that we are close to the ball in the x axis
+        # so smaller distanceYAxis => scale by more reward
+        # ballYLocation can range from 0 - 600
+        distanceYAxis = abs(ballYLocation - paddleYLocation)
+        scale = 1
+        if distanceYAxis < 1:
+            scale = 10
+        else:
+            scale = 10/distanceYAxis
+
+
+        # https://www.desmos.com/calculator play with -scale*x + 10
+        # for 6/distanceYAxis
+        # ex ballY = 100 paddleY = 500 => scale = 0.015
+        # ex ballY = 200 paddleY = 500 => scale = 0.02
+        # ex ballY = 300 paddleY = 500 => scale = 0.03
+        # ex ballY = 450 paddleY = 500 => scale = 0.12
+        def f(x, scaleBy):
+            return -0.1*x+8
+
+            # return -scaleBy*x + 10
+
+        # if distanceYAxis is large don't give it any reward
+        # if distanceYAxis > 150:
+        #     reward = 0
+        # else:
+        reward = f(distance, scale)
+        self.rewards += reward
+
     # actions
     def goLeft(self):
         vx=-10
         self.updatePaddleLocation(vx)
-        self.rewards -= 0.2
+        # self.rewards -= 0.5
 
     def goRight(self):
         vx=10
         self.updatePaddleLocation(vx)
-        self.rewards -= 0.2
+        # self.rewards -= 0.5
 
     def updatePaddleLocation(self, move_x):
         on = 0
         # check if paddle is in dimension of the screen before updating
-        if move_x + self.paddle[0][0].x > -5 and move_x + self.paddle[-1][0].x < self.screen.get_width():
+        # print(self.screen.get_width()) = 800
+        # if move_x + self.paddle[0][0].x > -5 and move_x + self.paddle[-1][0].x < self.screen.get_width():
+        if move_x + self.paddle[0][0].x > -5 and move_x + self.paddle[-1][0].x < 800:
             for p in self.paddle:
                 p[0].x = p[0].x + move_x
                 on += 1
@@ -182,7 +228,13 @@ class Breakout:
             # do nothing
             pass
 
+        # here?
+        # self.rewardForPaddleNearBallXAxis()
+
         self.ballUpdate()
+
+        # or here?
+        self.rewardForPaddleNearBallXAxis()
 
         currentState = self.getCurrentState()
 
@@ -202,7 +254,7 @@ class Breakout:
         self.ball.x = self.paddle[1][0].x
         self.ball.y = 490
         # self.yDirection = self.direction = -1
-        # self.yDirection = self.direction = 1
+        # self.yDirection = self.direction
         self.direction = -1
         self.yDirection = -1
         self.angle = 80
@@ -213,6 +265,7 @@ class Breakout:
 
     # render agent after training to see how it plays
     def render(self):
+        # pass
         # unsure about clock
         clock = pygame.time.Clock()
         clock.tick(60)
@@ -239,18 +292,23 @@ class Breakout:
             for event in pygame.event.get():
                 if event.type == QUIT:
                     sys.exit()
-            self.screen.fill((0, 0, 0))
+            # self.screen.fill((0, 0, 0))
             self.paddleUpdate()
             self.ballUpdate()
 
-            for block in self.blocks:
-                pygame.draw.rect(self.screen, (255,255,255), block)
-            for paddle in self.paddle:
-                pygame.draw.rect(self.screen, (255,255,255), paddle[0])
-            pygame.draw.rect(self.screen, (255,255,255), self.ball)
-            self.screen.blit(self.font.render(str(self.score), -1, (255,255,255)), (400, 550))
-            pygame.display.update()
+            # for block in self.blocks:
+            #     pygame.draw.rect(self.screen, (255,255,255), block)
+            # for paddle in self.paddle:
+            #     pygame.draw.rect(self.screen, (255,255,255), paddle[0])
+            # pygame.draw.rect(self.screen, (255,255,255), self.ball)
+            # self.screen.blit(self.font.render(str(self.score), -1, (255,255,255)), (400, 550))
+            # pygame.display.update()
 
 
 if __name__ == "__main__":
-    Breakout().main()
+    # Breakout().main()
+    b_env = Breakout()
+    b_env.make()
+    while(True):
+        print(b_env.step(np.random.randint(3)))
+        b_env.render()
