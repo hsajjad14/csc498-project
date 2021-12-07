@@ -1,0 +1,4 @@
+sarsa:
+discretize the state's
+split x locations into 15 groups
+split y locations into 20 groups
