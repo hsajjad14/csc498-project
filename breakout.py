@@ -6,7 +6,7 @@ import sys
 class Breakout:
     def __init__(self):
         # don't need this for training
-        # self.screen = pygame.display.set_mode((800, 600))
+        self.screen = pygame.display.set_mode((800, 600))
         self.blocks = []
         self.startingPaddleLocations = [300, 320, 340, 360]
         self.paddle = [[pygame.Rect(self.startingPaddleLocations[0], 500, 20, 10), 120],
@@ -266,20 +266,20 @@ class Breakout:
 
     # render agent after training to see how it plays
     def render(self):
-        pass
+        # pass
         # unsure about clock
-        # clock = pygame.time.Clock()
-        # clock.tick(60)
-        #
-        # self.screen.fill((0, 0, 0))
-        #
-        # for block in self.blocks:
-        #     pygame.draw.rect(self.screen, (255,255,255), block)
-        # for paddle in self.paddle:
-        #     pygame.draw.rect(self.screen, (255,255,255), paddle[0])
-        # pygame.draw.rect(self.screen, (255,255,255), self.ball)
-        # self.screen.blit(self.font.render(str(self.score), -1, (255,255,255)), (400, 550))
-        # pygame.display.update()
+        clock = pygame.time.Clock()
+        clock.tick(60)
+
+        self.screen.fill((0, 0, 0))
+
+        for block in self.blocks:
+            pygame.draw.rect(self.screen, (255,255,255), block)
+        for paddle in self.paddle:
+            pygame.draw.rect(self.screen, (255,255,255), paddle[0])
+        pygame.draw.rect(self.screen, (255,255,255), self.ball)
+        self.screen.blit(self.font.render(str(self.score), -1, (255,255,255)), (400, 550))
+        pygame.display.update()
 
     def make(self):
         self.createBlocks()
@@ -305,10 +305,10 @@ class Breakout:
             # self.screen.blit(self.font.render(str(self.score), -1, (255,255,255)), (400, 550))
             # pygame.display.update()
 
-if __name__ == "__main__":
+# if __name__ == "__main__":
     # Breakout().main()
-    b_env = Breakout()
-    b_env.make()
-    while(100):
-        print(b_env.step(np.random.randint(3)))
-        b_env.render()
+    # b_env = Breakout()
+    # b_env.make()
+    # while(100):
+    #     print(b_env.step(np.random.randint(3)))
+    #     b_env.render()
