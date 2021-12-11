@@ -7,6 +7,7 @@
 import numpy as np
 from breakout import Breakout
 import matplotlib.pyplot as plt
+import pickle
 
 
 # In[2]:
@@ -30,7 +31,7 @@ breakout_env.make()
 
 class Sarsa():
 
-    def __init__(self, ballSpeeds, gamma=0.9, epsilon=0.9):
+    def __init__(self, ballSpeeds, gamma=0.9, epsilon=1):
         self.paddleXLocations, self.ballXLocations, self.ballYLocations =  self.discretizeStateSpaceAllStates(800, 600)
 
         self.ballSpeeds = ballSpeeds
@@ -53,7 +54,8 @@ class Sarsa():
 
         self.alpha = 0.9
         self.gamma = gamma
-        self.epsilon = epsilon*1000
+        self.epsilon = epsilon
+        self.decay = -0.00002
         self.k = 1
 
 
@@ -170,6 +172,29 @@ class Sarsa():
     # get all possible paddle x-locations, ball x-locations, and ball y-locations
     # so paddle x-locations are split into 10 possible locations (because paddle is 80 pixels wide and game screen is 800)
     # ball x-locations are split into 40 possible locations, ball y-location into 20
+    # def discretizeStateSpaceAllStates(self, screenWidth, screenHeight):
+    #     # for paddle x-locations, split screenWidth by 80 (800/80 = 10 locations)
+    #     paddleXLocations = []
+    #     for i in range(0, screenWidth, 80):
+    #         paddleXLocations.append(i)
+    #
+    #
+    #     # for ball x-locations, split screenWidth by 20 (800/20 = 40 locations)
+    #     ballXLocations = []
+    #     for i in range(0, screenWidth, 20):
+    #         ballXLocations.append(i)
+    #
+    #     # for ball y-locations, split screenWidth by 30 to get 20 locations (600/30 = 20 locations)
+    #     ballYLocations = []
+    #     for i in range(0, screenHeight, 30):
+    #         ballYLocations.append(i)
+    #
+    #     return paddleXLocations, ballXLocations, ballYLocations
+
+    # get all possible paddle x-locations, ball x-locations, and ball y-locations
+    # so paddle x-locations are split into 10 possible locations (because paddle is 80 pixels wide and game screen is 800)
+    # ball x-locations are split into 40 possible locations, ball y-location into 20
+    # more states
     def discretizeStateSpaceAllStates(self, screenWidth, screenHeight):
         # for paddle x-locations, split screenWidth by 80 (800/80 = 10)
         paddleXLocations = []
@@ -177,14 +202,14 @@ class Sarsa():
             paddleXLocations.append(i)
 
 
-        # for ball x-locations, split screenWidth by 80 (800/20 = 40)
+        # for ball x-locations, split screenWidth by 10 (800/10 = 80 locations)
         ballXLocations = []
-        for i in range(0, screenWidth, 20):
+        for i in range(0, screenWidth, 10):
             ballXLocations.append(i)
 
-        # for ball y-locations, split screenWidth by 30 to get 20 locations (600/30 = 20)
+        # for ball y-locations, split screenWidth by 20 to get 30 locations (600/20 = 30 locations)
         ballYLocations = []
-        for i in range(0, screenHeight, 30):
+        for i in range(0, screenHeight, 20):
             ballYLocations.append(i)
 
         return paddleXLocations, ballXLocations, ballYLocations
@@ -198,7 +223,8 @@ class Sarsa():
         actions = []
 #         self.k = 0
 
-        for step in range(1000):
+        # for step in range(15000): # A
+        for step in range(8000):
             states.append(obs)
             act = self.epsilon_greedy_policy(tuple(obs))
 #             act = self.policy[tuple(obs)]
@@ -223,20 +249,26 @@ class Sarsa():
 
 # In[ ]:
 
-
-breakout_env.reset()
-
-ballspeeds = list(breakout_env.speeds.values())
-sarsaAgent = Sarsa(ballspeeds)
-
-episodes = 800
-
-for e in range(episodes):
-    data = sarsaAgent.collect_data(breakout_env)
-    sarsaAgent.sarsa_learning(*data)
-    sarsaAgent.epsilon = sarsaAgent.epsilon/sarsaAgent.k*200
-    sarsaAgent.k+=1
-
+#
+# breakout_env.reset()
+#
+# ballspeeds = list(breakout_env.speeds.values())
+# sarsaAgent = Sarsa(ballspeeds)
+#
+# episodes = 60000
+#
+# for e in range(episodes):
+#     data = sarsaAgent.collect_data(breakout_env)
+#     sarsaAgent.sarsa_learning(*data)
+#     sarsaAgent.epsilon = sarsaAgent.epsilon + sarsaAgent.decay
+#     sarsaAgent.k+=1
+#     print("episode =", e)
+#
+# with open('saved_policy.pkl', 'wb') as f:
+#     pickle.dump(sarsaAgent.policy, f)
+#
+# with open('saved_q_values.pkl', 'wb') as f:
+#     pickle.dump(sarsaAgent.q_values, f)
 
 # print(*data[0])
 
@@ -316,17 +348,17 @@ for e in range(episodes):
 
 # In[ ]:
 
-breakout_env = Breakout()
-breakout_env.make()
-
-initial_state = tuple(sarsaAgent.discretizeStateSpace(breakout_env.reset()))
-state = initial_state
-
-while(True):
-    print(state)
-    action = sarsaAgent.policy[state]
-    next_state, reward, done = breakout_env.step(action)
-    # next_state, reward, done = breakout_env.step(np.random.randint(3))
-    state = tuple(sarsaAgent.discretizeStateSpace(next_state))
-
-    breakout_env.render()
+# breakout_env = Breakout()
+# breakout_env.make()
+#
+# initial_state = tuple(sarsaAgent.discretizeStateSpace(breakout_env.reset()))
+# state = initial_state
+#
+# while(True):
+#     print(state)
+#     action = sarsaAgent.policy[state]
+#     next_state, reward, done = breakout_env.step(action)
+#     # next_state, reward, done = breakout_env.step(np.random.randint(3))
+#     state = tuple(sarsaAgent.discretizeStateSpace(next_state))
+#
+#     breakout_env.render()
