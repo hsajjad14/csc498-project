@@ -25,7 +25,7 @@ state = initial_state
 
 i = 1
 while(True):
-    print("step = ",i, ":: state = ",state)
+    print("step = ",i, ":: state = ",state, " score = ", breakout_env.score, " max # bricks = ", breakout_env.maxScore)
     action = doubleQLearningAgent.policy[state]
     next_state, reward, done = breakout_env.step(action)
     # next_state, reward, done = breakout_env.step(np.random.randint(3))

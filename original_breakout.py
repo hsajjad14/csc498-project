@@ -21,18 +21,18 @@ class Breakout:
 
         # changed speeds here, when increasing levels increase this speed and examine preformance of agent
         # original were:
-        # self.speeds = {
-        #     120:(-10, -3),
-        #     100:(-10, -8),
-        #     80:(10, -8),
-        #     45:(10, -3),
-        # }
         self.speeds = {
-            120:(-4, -3),
-            100:(-4, -4),
-            80:(4, -4),
-            45:(4, -3),
+            120:(-10, -3),
+            100:(-10, -8),
+            80:(10, -8),
+            45:(10, -3),
         }
+        # self.speeds = {
+        #     120:(-4, -3),
+        #     100:(-4, -4),
+        #     80:(4, -4),
+        #     45:(4, -3),
+        # }
         self.swap = {
             120:45,
             45:120,
@@ -292,23 +292,23 @@ class Breakout:
             for event in pygame.event.get():
                 if event.type == QUIT:
                     sys.exit()
-            # self.screen.fill((0, 0, 0))
+            self.screen.fill((0, 0, 0))
             self.paddleUpdate()
             self.ballUpdate()
 
-            # for block in self.blocks:
-            #     pygame.draw.rect(self.screen, (255,255,255), block)
-            # for paddle in self.paddle:
-            #     pygame.draw.rect(self.screen, (255,255,255), paddle[0])
-            # pygame.draw.rect(self.screen, (255,255,255), self.ball)
-            # self.screen.blit(self.font.render(str(self.score), -1, (255,255,255)), (400, 550))
-            # pygame.display.update()
+            for block in self.blocks:
+                pygame.draw.rect(self.screen, (255,255,255), block)
+            for paddle in self.paddle:
+                pygame.draw.rect(self.screen, (255,255,255), paddle[0])
+            pygame.draw.rect(self.screen, (255,255,255), self.ball)
+            self.screen.blit(self.font.render(str(self.score), -1, (255,255,255)), (400, 550))
+            pygame.display.update()
 
 
 if __name__ == "__main__":
-    # Breakout().main()
-    b_env = Breakout()
-    b_env.make()
-    while(True):
-        print(b_env.step(np.random.randint(3)))
-        b_env.render()
+    Breakout().main()
+    # b_env = Breakout()
+    # b_env.make()
+    # while(True):
+    #     print(b_env.step(np.random.randint(3)))
+    #     b_env.render()

@@ -51,14 +51,35 @@ class Breakout:
         self.rewards = 0
         self.done = False
 
+        self.maxScore = 0
+        self.brickLayout = 0
+
     def createBlocks(self):
         self.blocks = []
+        self.maxScore = 0
         y = 50
-        for __ in range(int(200 / 10)):
+        for i in range(int(200 / 10)):
             x = 50
-            for _ in range(int(800 / 25 - 6)):
-                block = pygame.Rect(x, y, 25, 10)
-                self.blocks.append(block)
+            for j in range(int(800 / 25 - 6)):
+                if self.brickLayout == 0:
+                    block = pygame.Rect(x, y, 25, 10)
+                    self.blocks.append(block)
+                    self.maxScore += 1
+                elif self.brickLayout == 1:
+                    if i % 2 == 0 and j % 2 ==0:
+                        block = pygame.Rect(x, y, 25, 10)
+                        self.blocks.append(block)
+                        self.maxScore += 1
+                elif self.brickLayout == 2:
+                    if i > 7 and i < 11 and j > 9 and j < 16:
+                        block = pygame.Rect(x, y, 25, 10)
+                        self.blocks.append(block)
+                        self.maxScore += 1
+                elif self.brickLayout == 3:
+                    if i > 7 and i < 11 and j > 9 and j < 16:
+                        block = pygame.Rect(x, y, 25, 10)
+                        self.blocks.append(block)
+                        self.maxScore += 1
                 x += 27
             y += 12
 
@@ -108,9 +129,9 @@ class Breakout:
                 self.yDirection *= -1
                 self.score += 1
 
-            if self.score == len(self.blocks):
+            if self.score == self.maxScore:
                 print("all blocks destroyed - you won")
-                self.rewards += 10000
+                self.rewards += 1000
                 self.done = True
 
             if self.ball.y > 600:
