@@ -66,17 +66,44 @@ class Breakout:
                     self.blocks.append(block)
                     self.maxScore += 1
                 elif self.brickLayout == 1:
+                    # bricks spaced out, skipping one
                     if i % 2 == 0 and j % 2 ==0:
                         block = pygame.Rect(x, y, 25, 10)
                         self.blocks.append(block)
                         self.maxScore += 1
                 elif self.brickLayout == 2:
+                    # bricks in the middle only
                     if i > 7 and i < 11 and j > 9 and j < 16:
                         block = pygame.Rect(x, y, 25, 10)
                         self.blocks.append(block)
                         self.maxScore += 1
                 elif self.brickLayout == 3:
-                    if i > 7 and i < 11 and j > 9 and j < 16:
+                    # one brick
+                    if i == 16 and j == 12:
+                        block = pygame.Rect(x, y, 25, 10)
+                        self.blocks.append(block)
+                        self.maxScore += 1
+                elif self.brickLayout == 4:
+                    # empty middle row, bricks all around
+                    if i < 4 or i > 15:
+                        block = pygame.Rect(x, y, 25, 10)
+                        self.blocks.append(block)
+                        self.maxScore += 1
+                elif self.brickLayout == 5:
+                    # empty middle collumn, bricks all around
+                    if j < 10 or j > 15:
+                        block = pygame.Rect(x, y, 25, 10)
+                        self.blocks.append(block)
+                        self.maxScore += 1
+                elif self.brickLayout == 6:
+                    # empty middle collumn, bricks all around
+                    if i < 4 or i > 15 or j < 8 or j > 17:
+                        block = pygame.Rect(x, y, 25, 10)
+                        self.blocks.append(block)
+                        self.maxScore += 1
+                elif self.brickLayout == 6:
+                    # empty middle collumn, bricks all around
+                    if i < 4 or i > 15 or j < 8 or j > 17:
                         block = pygame.Rect(x, y, 25, 10)
                         self.blocks.append(block)
                         self.maxScore += 1
