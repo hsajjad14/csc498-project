@@ -337,21 +337,12 @@ class Breakout:
         clock = pygame.time.Clock()
         self.createBlocks()
         while True:
-            clock.tick(60)
             for event in pygame.event.get():
                 if event.type == QUIT:
                     sys.exit()
-            # self.screen.fill((0, 0, 0))
             self.paddleUpdate()
             self.ballUpdate()
-
-            # for block in self.blocks:
-            #     pygame.draw.rect(self.screen, (255,255,255), block)
-            # for paddle in self.paddle:
-            #     pygame.draw.rect(self.screen, (255,255,255), paddle[0])
-            # pygame.draw.rect(self.screen, (255,255,255), self.ball)
-            # self.screen.blit(self.font.render(str(self.score), -1, (255,255,255)), (400, 550))
-            # pygame.display.update()
+            self.render()
 
 # if __name__ == "__main__":
     # Breakout().main()
