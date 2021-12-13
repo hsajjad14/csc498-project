@@ -281,6 +281,44 @@ class DoubleQLearning():
 
         return states, actions, rewards
 
+    def train(self):
+        breakout_env = Breakout()
+        breakout_env.make()
+
+        breakout_env.reset()
+
+        ballspeeds = list(breakout_env.speeds.values())
+        doubleQLearningAgent = DoubleQLearning(ballspeeds)
+
+        episodes = 22000
+        rewards_ = []
+
+        for e in range(episodes):
+            states, actions, rewards = doubleQLearningAgent.collect_data(breakout_env)
+            doubleQLearningAgent.double_q_learning(states, actions, rewards )
+            doubleQLearningAgent.epsilon = doubleQLearningAgent.epsilon + doubleQLearningAgent.decay
+            doubleQLearningAgent.k+=1
+            if doubleQLearningAgent.epsilon < 0:
+                doubleQLearningAgent.epsilon = 0
+
+            rewards_.append(sum(rewards))
+            print("episode =", e, " epsilon =", doubleQLearningAgent.epsilon, " rewards in episode = ", sum(rewards))
+
+        plt.plot(rewards_)
+        plt.ylabel('rewards')
+        plt.xlabel('episodes')
+        plt.title("rewards for tabular double q learnging, episodes = "+str(episodes) + ", epsilon decay = 0.0.00005, steps = 20000, brickLayout = " + str(breakout_env.brickLayout))
+        plt.savefig('Rewards_Double_Q_Learning.png', bbox_inches='tight')
+
+        with open('saved_double_q_learning_policy.pkl', 'wb') as f:
+            pickle.dump(doubleQLearningAgent.policy, f)
+
+        with open('saved_double_q_learning_q_values1.pkl', 'wb') as f:
+            pickle.dump(doubleQLearningAgent.q_values1, f)
+
+        with open('saved_double_q_learning_q_values2.pkl', 'wb') as f:
+            pickle.dump(doubleQLearningAgent.q_values2, f)
+
 
 
 
@@ -296,11 +334,12 @@ class DoubleQLearning():
 
 # breakout_env = Breakout()
 # breakout_env.make()
-#
+# #
 # breakout_env.reset()
-#
+# #
 # ballspeeds = list(breakout_env.speeds.values())
 # doubleQLearningAgent = DoubleQLearning(ballspeeds)
+# #doubleQLearningAgent.train()
 #
 # episodes = 61000
 # rewards_ = []

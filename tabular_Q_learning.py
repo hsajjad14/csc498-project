@@ -264,6 +264,43 @@ class QLearning():
 
         return states, actions, rewards
 
+    def train(self):
+        breakout_env = Breakout()
+        breakout_env.make()
+
+        breakout_env.reset()
+
+        ballspeeds = list(breakout_env.speeds.values())
+        qLearningAgent = QLearning(ballspeeds)
+
+        episodes = 6000
+        rewards_ = []
+
+        for e in range(episodes):
+            states, actions, rewards = qLearningAgent.collect_data(breakout_env)
+            qLearningAgent.q_learning(states, actions, rewards )
+            qLearningAgent.epsilon = qLearningAgent.epsilon + qLearningAgent.decay
+            qLearningAgent.k+=1
+            if qLearningAgent.epsilon < 0:
+                qLearningAgent.epsilon = 0
+
+            rewards_.append(sum(rewards))
+            print("episode =", e, " epsilon =", qLearningAgent.epsilon, " rewards in episode = ", sum(rewards))
+
+        plt.plot(rewards_)
+        plt.ylabel('rewards')
+        plt.xlabel('episodes')
+        plt.title("rewards for tabular q learnging, episodes = "+str(episodes) + ", epsilon decay = 0.00018, steps = 10000")
+        plt.savefig('Rewards_Q_Learning.png')
+
+
+        with open('saved_q_learning_policy.pkl', 'wb') as f:
+            pickle.dump(qLearningAgent.policy, f)
+
+        with open('saved_q_learning_q_values.pkl', 'wb') as f:
+            pickle.dump(qLearningAgent.q_values, f)
+
+
 
 
 
