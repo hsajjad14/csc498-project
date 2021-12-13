@@ -106,9 +106,11 @@ For tabular Q-Learning, now with a table of all possible states, we can just app
 Q(s_t,a_t) \leftarrow Q(s_t,a_t) + \alpha (r_t + \gamma max_a Q(s_{t+1},a) - Q(s_t,a_t))
 \end{equation}
 
-This exact Q-Learning update can be found \href{https://github.com/duoduocai-dot/csc498-project/blob/main/tabular_Q_learning.py#L88}{here}. Where we get the Q-value at each possible action for the next state, and plug in the max Q-value for the next state into the equation.
+This exact Q-Learning update can be found \href{https://github.com/duoduocai-dot/csc498-project/blob/main/tabular_Q_learning.py#L88}{here}. Where we get the Q-value at each action for the next state, and plug in the max Q-value for the next state into the equation.
 \\\\
 The other important part of Q-Learning is the epsilon-greedy exploration.
+
+
 
 \subsubsection{Tabular Double Q-Learning}
 
