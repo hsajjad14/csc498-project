@@ -52,7 +52,7 @@ class Breakout:
         self.done = False
 
         self.maxScore = 0
-        self.brickLayout = 0
+        self.brickLayout = 1
 
     def createBlocks(self):
         self.blocks = []

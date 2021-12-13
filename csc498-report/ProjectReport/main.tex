@@ -10,7 +10,8 @@
 
 \usepackage{csc498project}
 \usepackage{url}
-
+\usepackage{graphicx}
+\graphicspath{ {./images/} }
 
 
 % Short headings should be running head and authors last names
@@ -73,11 +74,41 @@ There is more about the environment including the \href{https://github.com/duodu
 \section{Algorithims}
 
 \subsection{Tabular Algorithms}
-We made 3 algorithms which utilize a tabular setup. We reduced the state sizes such that they could be discretized and fit inside a table.
+We made 3 algorithms which utilize a tabular setup. We reduced the state sizes such that they could be discretized, and fit inside a table.
 \\\\
-
+How we created the tabular setup is by first getting every possible paddle and ball locations
+using this \href{https://github.com/duoduocai-dot/csc498-project/blob/main/tabular_Q_learning.py#L223}{discretizeStateSpaceAllStates function} which splits the paddle x-locations into 20 possible locations, the ball x-locations into 80 possible locations, and ball y-locations into 30 possible locations. The game screen is 800x600 and paddle is 80 wide and ball is 5x5.
+\\\\
+I experimented with 3 different schemas to discretize the state space. These included:
+\begin{itemize}
+\item \href{https://github.com/duoduocai-dot/csc498-project/blob/main/tabular_Q_learning.py#L180}{10 paddle locations, 40 ball x-locations, 20 ball y-locations}
+\item \href{https://github.com/duoduocai-dot/csc498-project/blob/main/tabular_Q_learning.py#L203}{10 paddle locations, 80 ball x-locations, 30 ball y-locations}
+\item \href{https://github.com/duoduocai-dot/csc498-project/blob/main/tabular_Q_learning.py#L223}{20 paddle locations, 80 ball x-locations, 30 ball y-locations}
+\end{itemize}
+The last one with the most paddle and ball locations worked best:\\\\\\
+\begin{figure}[t]
+Here are the rewards from the last 10 episodes of training using the fewest number of states (first bullet):\\
+\includegraphics[scale=0.5]{rewards_last_10_episodes_fewest_number_states}
+\centering
+\end{figure}
+\begin{figure}[t]
+Compared the rewards from the last 10 episodes of training using the most states (last bullet):\\
+\includegraphics[scale=0.5]{rewards_last_10_episodes_largest_number_states}
+\centering
+\\ It's clear that the larger number of states gives more rewards.
+\end{figure}
+\\\\\\
+After, we (\url{https://github.com/duoduocai-dot/csc498-project/blob/main/tabular_Q_learning.py#L37}) just create a dictionary to store the policy and Q-values, with every possible state using the schema above.
 
 \subsubsection{Tabular Q-Learning}
+For tabular Q-Learning, now with a table of all possible states, we can just apply the Q-Learning epsilon greedy algorithm. Where the Q-Learning step:
+\begin{equation}
+Q(s_t,a_t) \leftarrow Q(s_t,a_t) + \alpha (r_t + \gamma max_a Q(s_{t+1},a) - Q(s_t,a_t))
+\end{equation}
+
+This exact Q-Learning update can be found \href{https://github.com/duoduocai-dot/csc498-project/blob/main/tabular_Q_learning.py#L88}{here}. Where we get the Q-value at each possible action for the next state, and plug in the max Q-value for the next state into the equation.
+\\\\
+The other important part of Q-Learning is the epsilon-greedy exploration.
 
 \subsubsection{Tabular Double Q-Learning}
 
