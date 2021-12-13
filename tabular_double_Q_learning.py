@@ -89,13 +89,13 @@ class DoubleQLearning():
                 rand_prob_for_q_func_choice = np.random.random()
 
                 if rand_prob_for_q_func_choice < 0.5:
-                    QValueActionsForNextState = [nextQValue1Action0, nextQValue1Action1, nextQValue1Action2]
-                    bestActionForNextState = max(enumerate(QValueActionsForNextState), key=lambda x: x[1])[0]
+                    QValueActionsForNextStateForQ2 = [nextQValue2Action0, nextQValue2Action1, nextQValue2Action2]
+                    bestActionForNextState = max(enumerate(QValueActionsForNextStateForQ2), key=lambda x: x[1])[0]
                     nextQValue = self.q_values1[(nextState, bestActionForNextState)]
                     self.q_values1[(state, action)] = currentQValue1 + self.alpha * (reward + self.gamma*nextQValue - currentQValue1)
                 else:
-                    QValueActionsForNextState = [nextQValue2Action0, nextQValue2Action1, nextQValue2Action2]
-                    bestActionForNextState = max(enumerate(QValueActionsForNextState), key=lambda x: x[1])[0]
+                    QValueActionsForNextStateForQ1 = [nextQValue1Action0, nextQValue1Action1, nextQValue1Action2]
+                    bestActionForNextState = max(enumerate(QValueActionsForNextStateForQ1), key=lambda x: x[1])[0]
                     nextQValue = self.q_values2[(nextState, bestActionForNextState)]
                     self.q_values2[(state, action)] = currentQValue2 + self.alpha * (reward + self.gamma*nextQValue - currentQValue2)
 
