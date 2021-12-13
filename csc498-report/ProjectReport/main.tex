@@ -9,6 +9,7 @@
 % is archived at http://www.jmlr.org/format/natbib.pdf
 
 \usepackage{csc498project}
+\usepackage{url}
 
 
 
@@ -37,14 +38,53 @@ Atari Breakout environment implementation and training an agent using multiple a
 \end{abstract}
 
 \section{Introduction}
-Our project is implementing an Atari breakout environment and training an agent to play it across general levels. The project repository can be found here: https://github.com/duoduocai-dot/csc498-project
+Our project is implementing an Atari breakout environment and training an agent to play it across general levels. The project repository can be found here: \url{https://github.com/duoduocai-dot/csc498-project} To play the original game, after cloning the project, just run this file: \url{https://github.com/duoduocai-dot/csc498-project/blob/main/run_Breakout.py}.\\
+Our environment is \href{https://github.com/duoduocai-dot/csc498-project/blob/main/breakout.py}{here}. We made a made our environment embedded into a pygame class for Breakout, adding environment functions and variables. \\
+We made 6 algorithms which play Breakout, and compare their performance in this report. The algorithms we made are: DQN, double-DQN, policy gradient REINFORCE, tabular Q-Learning, tabular double Q-Learning, and tabular SARSA.
 
-\subsection{asldkfjasf}
-sdklfklasdf
+\section{Environment}
+Our environment is here: \url{https://github.com/duoduocai-dot/csc498-project/blob/main/breakout.py}.
+\subsection{Rewards}
+We experimented with various reward mechanisms. Our original reward schema was:
+\begin{itemize}
+\item +10 for ball hitting paddle
+\item -10 ball missing paddle
+\item +1 ball hits brick
+\item -0.2 movement penalty
+\item +1000 ball destroys all bricks
+\end{itemize}
+However, with this model we noticed it was difficult for the agent to actually learn, as it doesn't get direct feedback if making an action is good or not. So we altered the reward schema to be:
+\begin{itemize}
+\item +10 for ball hitting paddle
+\item -10 ball missing paddle
+\item Distance between paddle and ball in the x-Axis \url{https://github.com/duoduocai-dot/csc498-project/blob/main/breakout.py#L179}
+\item +1000 ball destroys all bricks
+\end{itemize}
+\subsection{Environment variables, functions} 
+Regarding the rest of the environment, the step function is \href{https://github.com/duoduocai-dot/csc498-project/blob/f46268a6c9241b77efd6c96a6dd8ecc3ec5bae1e/breakout.py#L266}{here}, where the paddle moves depending on the action passed in, and updates rewards for that step. It then returns the game state which is \href{https://github.com/duoduocai-dot/csc498-project/blob/f46268a6c9241b77efd6c96a6dd8ecc3ec5bae1e/breakout.py#L246}{[paddle x-location, ball x-location, ball y-location,ball x-speed, ball y-speed, bricks left]}.
+\\
+The \href{https://github.com/duoduocai-dot/csc498-project/blob/f46268a6c9241b77efd6c96a6dd8ecc3ec5bae1e/breakout.py#L299}{reset} function resets the environment, setting ball, bricks, paddle to their original position. 
+\\ \href{https://github.com/duoduocai-dot/csc498-project/blob/f46268a6c9241b77efd6c96a6dd8ecc3ec5bae1e/breakout.py#L316}{Render} functio, renders the game. \href{https://github.com/duoduocai-dot/csc498-project/blob/f46268a6c9241b77efd6c96a6dd8ecc3ec5bae1e/breakout.py#L332}{Make} function creates the brick layout, and \href{https://github.com/duoduocai-dot/csc498-project/blob/f46268a6c9241b77efd6c96a6dd8ecc3ec5bae1e/breakout.py#L335}{main function} allows the user to play the game. 
+\\
+Agent actions are to \href{https://github.com/duoduocai-dot/csc498-project/blob/f46268a6c9241b77efd6c96a6dd8ecc3ec5bae1e/breakout.py#L270}{move left (0), move right (1), stay still (2)}.
+\\
+There is more about the environment including the \href{https://github.com/duoduocai-dot/csc498-project/blob/f46268a6c9241b77efd6c96a6dd8ecc3ec5bae1e/breakout.py#L55}{brickLayout} which we used in testing and comparing the tabular algorithms which I will talk about in that section.  
 
-\section{Motivation and Impact}
+\section{Algorithims}
 
-\section{Intuition}
+\subsection{Tabular Algorithms}
+
+
+\subsubsection{Tabular Q-Learning}
+
+\subsubsection{Tabular Double Q-Learning}
+
+\subsubsection{Tabular Sarsa}
+
+\subsubsection{Comparing tabular algorithms}
+
+\subsection{Policy Gradient}
+
 
 \bibliography{bibliography}
 
