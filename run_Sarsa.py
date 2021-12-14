@@ -9,10 +9,10 @@ breakout_env.make()
 ballspeeds = list(breakout_env.speeds.values())
 sarsaAgent = Sarsa(ballspeeds)
 
-with open('sarsa_saved_policy_and_q/saved_policy.pkl', 'rb') as f:
+with open('sarsa_saved_policy_and_q/saved_sarsa_policy.pkl', 'rb') as f:
     sarsaAgent.policy = pickle.load(f)
 
-with open('sarsa_saved_policy_and_q/saved_q_values.pkl', 'rb') as f:
+with open('sarsa_saved_policy_and_q/saved_sarsa_q_values.pkl', 'rb') as f:
     sarsaAgent.q_values = pickle.load(f)
 
 print("huh?")
