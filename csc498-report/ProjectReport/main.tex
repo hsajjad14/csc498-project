@@ -154,9 +154,13 @@ All 3 tabular algorithms do achieve good performance and are able to play the ga
 Here are graphs for all 3 algorithms, it's clear that as episodes increase and epsilon grows smaller, all 3 algorithms achieve higher rewards. These graphs were made \\
 ----pictures----
 \subsubsection{Parameter and Hyperparameter Choice}
-In the tabular algorithms there were many parameters that we used: epsilon and decay-value, episodes, stepsize, learning rate ($\alpha$),  discount ($\gamma$).
+In the tabular algorithms there were many parameters that we used: epsilon and decay-value, episodes, step size, learning rate ($\alpha$),  discount ($\gamma$).
 \\\\
-The choice of epsilon was simply just 1. We wanted lots of exploration in the beginning, for the agent to learn the environment. The epsilon decay was implemented such that: $\epsilon = \epsilon + decay$. The reason for this is because we wanted a linear decrease of epsilon to account for lots of exploration
+The choice of epsilon was simply just 1. We wanted lots of exploration in the beginning, for the agent to learn the environment. The epsilon decay was implemented such that: $\epsilon = \epsilon + decay$. The reason for this is because we wanted a linear decrease of epsilon to account for lots of exploration. 
+\\\\
+Our choice of step size to fully complete the game is 20000. The reason for the large step size is that the game overall takes a long time to complete. For example, this \href{https://github.com/duoduocai-dot/csc498-project/blob/main/tabular_double_q_learning_example.mkv}{video example} of a double Q-Learning agent playing the game takes atleast 30000 steps.
+\\\\
+Our choice of $\gamma$ was 0.9 because we wanted the agent to count future states heavily because it takes many steps for the agent to win the game, and we wanted to account for this with our discount.
 \subsubsection{Q-Learning maximization problems}
 \subsubsection{Generalized tests}
 \subsubsection{Which Layout is best to train on?}
@@ -178,8 +182,6 @@ talk about
 \item fixes for this which can include lowering learning rate, using momentum in gradient or using soft-actor-critic, or using exploration
 \item talk about the epsilon-greedy exploration currently implemented
 \end{itemize}
-
-\subsection{Deep Recurrent Q-Network}
 
 
 \bibliography{bibliography}
