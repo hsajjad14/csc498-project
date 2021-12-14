@@ -28,7 +28,7 @@ import pickle
 
 class QLearning():
 
-    def __init__(self, ballSpeeds, gamma=0.9, epsilon=1):
+    def __init__(self, ballSpeeds, gamma=0.9, epsilon=1, decay=-0.0001, steps=1000):
         self.paddleXLocations, self.ballXLocations, self.ballYLocations =  self.discretizeStateSpaceAllStates(800, 600)
 
         self.ballSpeeds = ballSpeeds
@@ -52,8 +52,10 @@ class QLearning():
         self.alpha = 0.9
         self.gamma = gamma
         self.epsilon = epsilon
-        self.decay = -0.001
+        self.decay = decay
         self.k = 1
+
+        self.steps = steps
 
 
     def q_learning(self, states, actions, rewards):
@@ -250,7 +252,7 @@ class QLearning():
 #         self.k = 0
 
         # for step in range(15000): # A
-        for step in range(1000):
+        for step in range(self.steps):
             states.append(obs)
             act = self.epsilon_greedy_policy(tuple(obs))
 #             act = self.policy[tuple(obs)]
@@ -271,12 +273,13 @@ class QLearning():
         breakout_env.reset()
 
         ballspeeds = list(breakout_env.speeds.values())
-        qLearningAgent = QLearning(ballspeeds)
+        qLearningAgent = QLearning(ballspeeds, decay=self.decay, steps=self.steps)
 
         episodes = 6000
         rewards_ = []
 
         for e in range(episodes):
+            breakout_env.reset()
             states, actions, rewards = qLearningAgent.collect_data(breakout_env)
             qLearningAgent.q_learning(states, actions, rewards )
             qLearningAgent.epsilon = qLearningAgent.epsilon + qLearningAgent.decay
@@ -301,6 +304,17 @@ class QLearning():
             pickle.dump(qLearningAgent.q_values, f)
 
 
+# training code
+
+# breakout_env = Breakout()
+# breakout_env.make()
+#
+# breakout_env.reset()
+#
+# ballspeeds = list(breakout_env.speeds.values())
+# qLearningAgent = QLearning(ballspeeds)
+# qLearningAgent.train()
+
 
 
 
@@ -312,38 +326,97 @@ class QLearning():
 
 # In[ ]:
 
-# training
+#
+
+# print(*data[0])
+
+
+# In[153]:
+
+
+# # Final Benchmarking
+# obs = tuple(sarsaAgent.discretizeStateSpace(breakout_env.reset()))
+
+# rewards = np.zeros((100, 100))
+# states = np.zeros((100, 101))
+# actions = np.zeros((100, 100))
+
+# for run in range(100):
+#     for step in range(100):
+# #         states[run, step] = obs
+#         act = sarsaAgent.policy[obs]
+#         obs, rew, done = breakout_env.step(act)
+#         obs = tuple(sarsaAgent.discretizeStateSpace(obs))
+#         rewards[run, step] = rew
+#         actions[run, step] = act
+# #     states[run, -1] = obs
+
+# print("Average return: {}".format(rewards.sum(1).mean()))
+# print("Standard deviation: {}".format(rewards.sum(1).std()))
+
+
+# In[149]:
+
+
+# l = sarsaAgent.q_values
+# val = []
+# for k, v in l.items():
+#     if v != 0:
+#         val.append(v)
+
+
+# In[79]:
+
+
+# ballspeeds = breakout_env.speeds.values()
+# list(ballspeeds)
+
+
+# In[80]:
+
+
+# ballspeeds = list(breakout_env.speeds.values())
+# sarsaAgent = Sarsa(ballspeeds)
+
+
+# In[81]:
+
+
+# state = breakout_env.step(0)[0]
+# descretedState = sarsaAgent.discretizeStateSpace(state)
+
+
+# In[82]:
+
+
+# state
+
+
+# In[83]:
+
+
+# descretedState
+
+
+# In[50]:
+
+
+# breakout_env.reset()[0]
+
+
+# In[ ]:
+
 # breakout_env = Breakout()
 # breakout_env.make()
 #
-# breakout_env.reset()
+# initial_state = tuple(sarsaAgent.discretizeStateSpace(breakout_env.reset()))
+# state = initial_state
 #
-# ballspeeds = list(breakout_env.speeds.values())
-# qLearningAgent = QLearning(ballspeeds)
+# while(True):
+#     print(state)
+#     action = sarsaAgent.policy[state]
+#     next_state, reward, done = breakout_env.step(action)
+#     # next_state, reward, done = breakout_env.step(np.random.randint(3))
+#     state = tuple(sarsaAgent.discretizeStateSpace(next_state))
 #
-# episodes = 1010
-# rewards_ = []
-#
-# for e in range(episodes):
-#     states, actions, rewards = qLearningAgent.collect_data(breakout_env)
-#     qLearningAgent.q_learning(states, actions, rewards )
-#     qLearningAgent.epsilon = qLearningAgent.epsilon + qLearningAgent.decay
-#     qLearningAgent.k+=1
-#     if qLearningAgent.epsilon < 0:
-#         qLearningAgent.epsilon = 0
-#
-#     rewards_.append(sum(rewards))
-#     print("episode =", e, " epsilon =", qLearningAgent.epsilon, " rewards in episode = ", sum(rewards))
-#
-# plt.plot(rewards_)
-# plt.ylabel('rewards')
-# plt.xlabel('episodes')
-# plt.title("rewards for tabular q learnging, episodes = "+str(episodes) + ", epsilon decay = "+ str(qLearningAgent.epsilon) + ", steps = 1000")
-# plt.savefig('Rewards_Q_Learning.png')
-#
-#
-# with open('saved_q_learning_policy.pkl', 'wb') as f:
-#     pickle.dump(qLearningAgent.policy, f)
-#
-# with open('saved_q_learning_q_values.pkl', 'wb') as f:
-#     pickle.dump(qLearningAgent.q_values, f)
+#     breakout_env.render()

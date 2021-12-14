@@ -106,11 +106,24 @@ For tabular Q-Learning, now with a table of all possible states, we can just app
 Q(s_t,a_t) \leftarrow Q(s_t,a_t) + \alpha (r_t + \gamma max_a Q(s_{t+1},a) - Q(s_t,a_t))
 \end{equation}
 
-This exact Q-Learning update can be found \href{https://github.com/duoduocai-dot/csc498-project/blob/main/tabular_Q_learning.py#L88}{here}. Where we get the Q-value at each possible action for the next state, and plug in the max Q-value for the next state into the equation.
+This exact Q-Learning update can be found \href{https://github.com/duoduocai-dot/csc498-project/blob/main/tabular_Q_learning.py#L88}{here}. Where we get the Q-value at each action for the next state, and plug in the max Q-value for the next state into the equation.
 \\\\
-The other important part of Q-Learning is the epsilon-greedy exploration.
+The other important aspect of Q-Learning is the epsilon-greedy exploration. We first initialize our \href{https://github.com/duoduocai-dot/csc498-project/blob/main/tabular_Q_learning.py#L54}{epsilon in the class}, then it is updated after every \href{https://github.com/duoduocai-dot/csc498-project/blob/main/tabular_Q_learning.py#L285}{episode}. The policy is updated for every state inside the \href{https://github.com/duoduocai-dot/csc498-project/blob/main/tabular_Q_learning.py#L103}{q\_learning function} using the same epsilon-greedy approach.
 
 \subsubsection{Tabular Double Q-Learning}
+In tabular double Q-Learning, our \href{https://github.com/duoduocai-dot/csc498-project/blob/main/tabular_double_Q_learning.py}{algorithm} is nearly the exact same as tabular Q-Learning, except we maintain \href{https://github.com/duoduocai-dot/csc498-project/blob/main/tabular_double_Q_learning.py#L40}{two} Q-value dictionaries and each one is update with 0.5 \href{https://github.com/duoduocai-dot/csc498-project/blob/main/tabular_double_Q_learning.py#L91}{probability}.
+\\\\
+Pseudocode for double Q-Learning:
+\\
+Select $a_t$ using epsilon greedy $\pi(s) = argmax_a Q_1(s_t, a)+Q_2(s_t, a)$ 
+\\
+with 0.5 probability:
+\t
+\begin{equation}
+k
+\end{equation}
+
+
 
 \subsubsection{Tabular Sarsa}
 

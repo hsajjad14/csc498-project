@@ -13,10 +13,6 @@ import pickle
 # In[2]:
 
 
-breakout_env = Breakout()
-breakout_env.make()
-
-
 # In[143]:
 
 
@@ -31,7 +27,7 @@ breakout_env.make()
 
 class Sarsa():
 
-    def __init__(self, ballSpeeds, gamma=0.9, epsilon=1):
+    def __init__(self, ballSpeeds, gamma=0.9, epsilon=1, decay=-0.0001, steps=1000):
         self.paddleXLocations, self.ballXLocations, self.ballYLocations =  self.discretizeStateSpaceAllStates(800, 600)
 
         self.ballSpeeds = ballSpeeds
@@ -55,8 +51,9 @@ class Sarsa():
         self.alpha = 0.9
         self.gamma = gamma
         self.epsilon = epsilon
-        self.decay = -0.00002
+        self.decay = decay
         self.k = 1
+        self.steps = steps
 
 
     def sarsa_learning(self, states, actions, rewards):
@@ -224,7 +221,7 @@ class Sarsa():
 #         self.k = 0
 
         # for step in range(15000): # A
-        for step in range(8000):
+        for step in range(self.steps):
             states.append(obs)
             act = self.epsilon_greedy_policy(tuple(obs))
 #             act = self.policy[tuple(obs)]
@@ -240,18 +237,16 @@ class Sarsa():
 
 
     def train(self):
-        breakout_env = Breakout()
-        breakout_env.make()
-
         breakout_env.reset()
 
         ballspeeds = list(breakout_env.speeds.values())
-        sarsaAgent = Sarsa(ballspeeds)
+        sarsaAgent = Sarsa(ballspeeds, decay=self.decay, steps=self.steps)
 
         episodes = 6000
         rewards_ = []
 
         for e in range(episodes):
+            breakout_env.reset()
             states, actions, rewards = sarsaAgent.collect_data(breakout_env)
             sarsaAgent.sarsa_learning(states, actions, rewards)
             sarsaAgent.epsilon = sarsaAgent.epsilon + sarsaAgent.decay
@@ -275,8 +270,6 @@ class Sarsa():
         with open('saved_q_values.pkl', 'wb') as f:
             pickle.dump(sarsaAgent.q_values, f)
 
-
-
 # In[155]:
 
 
@@ -285,20 +278,43 @@ class Sarsa():
 
 # In[ ]:
 
+# training code
+
+# breakout_env = Breakout()
+# breakout_env.make()
 #
 # breakout_env.reset()
 #
 # ballspeeds = list(breakout_env.speeds.values())
 # sarsaAgent = Sarsa(ballspeeds)
+# sarsaAgent.train()
+
+
+# breakout_env.reset()
 #
-# episodes = 60000
+# ballspeeds = list(breakout_env.speeds.values())
+# sarsaAgent = Sarsa(ballspeeds)
+#
+# episodes = 6000
+# rewards_ = []
 #
 # for e in range(episodes):
-#     data = sarsaAgent.collect_data(breakout_env)
-#     sarsaAgent.sarsa_learning(*data)
+#     states, actions, rewards = sarsaAgent.collect_data(breakout_env)
+#     sarsaAgent.sarsa_learning(states, actions, rewards)
 #     sarsaAgent.epsilon = sarsaAgent.epsilon + sarsaAgent.decay
+#     if sarsaAgent.epsilon < 0:
+#         sarsaAgent.epsilon = 0
 #     sarsaAgent.k+=1
-#     print("episode =", e)
+#
+#     rewards_.append(sum(rewards))
+#     print("episode =", e, " epsilon =", sarsaAgent.epsilon, " rewards in episode = ", sum(rewards))
+#
+# plt.plot(rewards_)
+# plt.ylabel('rewards')
+# plt.xlabel('episodes')
+# plt.title("rewards for tabular Sarsa, episodes = "+str(episodes) + ", epsilon decay = 0.00018, steps = 10000")
+# plt.savefig('Rewards_QSarsa.png')
+#
 #
 # with open('saved_policy.pkl', 'wb') as f:
 #     pickle.dump(sarsaAgent.policy, f)
