@@ -204,6 +204,15 @@ talk about
 \end{itemize}
 
 
+
+\subsection{Deep Recurrent Q-Network}
+The deep recurrent Q-network has most of the ideas from the paper ..., to calulate the target function, we utilize a gated recurrent unit with one layer. Architecture: unidirectional, input size: 6 (observation space), one hidden layer of size 10, output size 3 (action space). In the forward pass, the computed value is then passed into a linear model. In the experience replay buffer, we sample sequences instead of single points.
+\newline
+The resaon we use GRU: \newline
+\begin{itemize}
+\item Given that the problem is relatively simple, using LSTM is inefficient.
+\item The forget gate of LSTM is not useful in our case, because we don't need to skip any weak past frame and reuse them in later stages. 
+\end{itemize}
 \bibliography{bibliography}
 
 \end{document}
