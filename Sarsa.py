@@ -242,7 +242,7 @@ class Sarsa():
         ballspeeds = list(breakout_env.speeds.values())
         sarsaAgent = Sarsa(ballspeeds, decay=self.decay, steps=self.steps)
 
-        episodes = 6000
+        episodes = 40000
         rewards_ = []
 
         for e in range(episodes):
@@ -260,14 +260,14 @@ class Sarsa():
         plt.plot(rewards_)
         plt.ylabel('rewards')
         plt.xlabel('episodes')
-        plt.title("rewards for tabular Sarsa, episodes = "+str(episodes) + ", epsilon decay = 0.00018, steps = 10000")
-        plt.savefig('Rewards_QSarsa.png')
+        plt.title("rewards for tabular Sarsa, episodes = "+str(episodes) + ", epsilon decay = 0.000013, steps = 20000")
+        plt.savefig('Rewards_Sarsa.png', bbox_inches='tight')
 
 
-        with open('saved_policy.pkl', 'wb') as f:
+        with open('saved_sarsa_policy.pkl', 'wb') as f:
             pickle.dump(sarsaAgent.policy, f)
 
-        with open('saved_q_values.pkl', 'wb') as f:
+        with open('saved_sarsa_q_values.pkl', 'wb') as f:
             pickle.dump(sarsaAgent.q_values, f)
 
 # In[155]:
@@ -286,7 +286,7 @@ class Sarsa():
 # breakout_env.reset()
 #
 # ballspeeds = list(breakout_env.speeds.values())
-# sarsaAgent = Sarsa(ballspeeds)
+# sarsaAgent = Sarsa(ballspeeds, decay=-0.000026, steps=21000)
 # sarsaAgent.train()
 
 
