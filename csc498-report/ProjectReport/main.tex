@@ -162,8 +162,28 @@ Our choice of step size to fully complete the game is 20000. The reason for the 
 \\\\
 Our choice of $\gamma$ was 0.9 because we wanted the agent to count future states heavily because it takes many steps for the agent to win the game, and we wanted to account for this with our discount.
 \subsubsection{Q-Learning maximization problems}
+We had maximization bias occur in our old, incorrect implementation of double Q-Learning (which ended up being just regular Q-Learning). Here are the graphed rewards for that session:
+\begin{figure}[H]
+\includegraphics[scale=0.6]{Rewards_Double_Q_Learning_7}
+\centering
+\end{figure}
+This is an \href{https://github.com/duoduocai-dot/csc498-project/blob/main/incorrect_double_q_learning_maximization_bias_example.mkv}{example video} of the agent playing the game, from  the same session. As it is seen from the end of the  video, the agent gets stuck in an infinite loop of bouncing the ball in the same pattern which happens to avoid the blocks. From the graph, it is clear that the agent was able to win the game in some episodes (from 17000-22000), but after, the rewards converged. What ended up happening is that at some point in an episode the agent picks an action that gives it a higher reward now, but not in the future. One reason for this is because the agent is essentially just trying to get as close to the ball as possible, from our reward model, we don't reward it when the ball hits a brick, and their is no brick representation in the state, so it's a partially observed state. So the agent is trying to center itself with the ball, but that doesn't guarantee that it will hit the ball in such a way that a brick will break.
+\\\\
+To fix this, we can add a more complex form of exploration, such that the agent can explore more when it gets close to the end or gets stuck in a loop of avoid bricks. Instead of just taking a max action.
+\\
+Or we can change our entire environment to go from a partially observed MDP to a fully observed one, modelling brick-layout, score, ball location/speed, paddle location, etc. But for this, the algorithms also get more complex, we will need to utilize Neural Networks to handle the full states.
+\\
+Another possible fix is to alter reward mechanics such that hitting a brick awards rewards. The reason we didn't do this initially is because the ball hitting is something that happens so much later after the paddle hits the ball that it was harming our training in the initial stages. I.e, the agent would get random rewards, but wouldn't be able to recreate it.
 \subsubsection{Generalized tests}
 \subsubsection{Which Layout is best to train on?}
+We think that the layout best to train on is brick-layout number 1 (left). It is better than brick-layout 0 (right) because it allows for the ball to go in between bricks in a much earlier part of the episode than layout 0 allows. Thus the agent is able to learn more variations of ball locations and velocities.
+\begin{figure}[H]
+\includegraphics[scale=0.3]{bricklayout1}
+\includegraphics[scale=0.3]{bricklayout0}
+\centering
+\end{figure}
+
+
 Talk about
 \begin{itemize}
 \item epsilon choice and decay choice, step and episode size
