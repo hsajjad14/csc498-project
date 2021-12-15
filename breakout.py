@@ -52,7 +52,7 @@ class Breakout:
         self.done = False
 
         self.maxScore = 0
-        self.brickLayout = 1
+        self.brickLayout = 7
 
     def createBlocks(self):
         self.blocks = []
@@ -96,14 +96,14 @@ class Breakout:
                         self.blocks.append(block)
                         self.maxScore += 1
                 elif self.brickLayout == 6:
-                    # empty middle collumn, bricks all around
+                    # empty middle bricks all around
                     if i < 4 or i > 15 or j < 8 or j > 17:
                         block = pygame.Rect(x, y, 25, 10)
                         self.blocks.append(block)
                         self.maxScore += 1
-                elif self.brickLayout == 6:
-                    # empty middle collumn, bricks all around
-                    if i < 4 or i > 15 or j < 8 or j > 17:
+                elif self.brickLayout == 7:
+                    # empty middle bricks all around, sparsed
+                    if (i < 4 or i > 15 or j < 8 or j > 17) and i % 2 == 0 and j % 2 == 0:
                         block = pygame.Rect(x, y, 25, 10)
                         self.blocks.append(block)
                         self.maxScore += 1

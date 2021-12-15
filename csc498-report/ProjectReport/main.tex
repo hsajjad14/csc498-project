@@ -138,7 +138,19 @@ Q(s_t,a_t) \leftarrow Q(s_t,a_t) + \alpha (r_t + \gamma Q(s_{t+1},a_{t+1}) - Q(s
 \subsubsection{Training} 
 To train each of the algorithms, there is a training function which creates an instance of the algorithm then loops through a number of episodes collecting states, actions and rewards and using them for training. The code to run the training is commented out at the end of each file for \href{https://github.com/duoduocai-dot/csc498-project/blob/main/Sarsa.py#L281}{SARSA}, \href{https://github.com/duoduocai-dot/csc498-project/blob/main/tabular_Q_learning.py#L307}{QL}, and \href{https://github.com/duoduocai-dot/csc498-project/blob/main/tabular_double_Q_learning.py#L326}{Double-QL}
 
-\subsection{Comparing tabular algorithms} 
+\subsection{Tabular algorithms Analysis} 
+\subsubsection{Performance}
+All 3 tabular algorithms do achieve good performance and are able to play the game effectively.
+\\\\
+Here are graphs for all 3 algorithms, it's clear that as episodes increase and epsilon grows smaller, all 3 algorithms achieve higher rewards. These graphs were made using the \href{https://github.com/duoduocai-dot/csc498-project/blob/main/tabular_experiments.py#L125}{experiment2 function in tabular\_experiments.py}. All three algorithms were trained for 40000 episodes 21000 steps each, with a decay value of -0.000026 as specified in the experiment function. They were all trained on brick-layout 1 (the one with the spaces between bricks, check brick-layout section) The bottom left graph is Q-Learning, top is double Q-Learning, and bottom right is SARSA. Each algorithm took approximately 5-6 hours to train with the above episodes and steps.
+\begin{figure}[H]
+\includegraphics[scale=0.4]{Rewards_Double_Q_Learning}
+\includegraphics[scale=0.4]{Rewards_Q_Learning}\includegraphics[scale=0.4]{Rewards_Sarsa}
+\centering
+\end{figure}
+
+
+\subsubsection{Comparing Tabular Algorithms}
 {
 Here is a direct comparison of all 3 algorithms trained over 10000 episodes for 5000 steps per. It's clear from the pictures that Q-Learning and double Q-Learning outpreform SARSA.
 \begin{figure}[H]
@@ -148,33 +160,43 @@ Rewards Comparison of all 3 tabular algorithms and the last 3000 episodes compar
 \centering
 \end{figure}
 }
-\subsubsection{Performance}
-All 3 tabular algorithms do achieve good performance and are able to play the game effectively.
-\\
-Here are graphs for all 3 algorithms, it's clear that as episodes increase and epsilon grows smaller, all 3 algorithms achieve higher rewards. These graphs were made \\
-----pictures----
+
 \subsubsection{Parameter and Hyperparameter Choice}
 In the tabular algorithms there were many parameters that we used: epsilon and decay-value, episodes, step size, learning rate ($\alpha$),  discount ($\gamma$).
 \\\\
 The choice of epsilon was simply just 1. We wanted lots of exploration in the beginning, for the agent to learn the environment. The epsilon decay was implemented such that: $\epsilon = \epsilon + decay$. The reason for this is because we wanted a linear decrease of epsilon to account for lots of exploration. 
 \\\\
-Our choice of step size to fully complete the game is 20000. The reason for the large step size is that the game overall takes a long time to complete. For example, this \href{https://github.com/duoduocai-dot/csc498-project/blob/main/tabular_double_q_learning_example.mkv}{video example} of a double Q-Learning agent playing the game takes atleast 30000 steps.
+Our choice of step size to fully complete the game is 20000. The reason for the large step size is that the game overall takes a long time to complete. For example, this \href{https://github.com/duoduocai-dot/csc498-project/blob/main/pictures_and_videos/tabular_double_q_learning_example.mkv}{video example} of a double Q-Learning agent playing the game takes atleast 30000 steps.
 \\\\
 Our choice of $\gamma$ was 0.9 because we wanted the agent to count future states heavily because it takes many steps for the agent to win the game, and we wanted to account for this with our discount.
 \subsubsection{Q-Learning maximization problems}
-We had maximization bias occur in our old, incorrect implementation of double Q-Learning (which ended up being just regular Q-Learning). Here are the graphed rewards for that session:
+We had maximization bias occur in some training sessions for Q-Learning:
 \begin{figure}[H]
-\includegraphics[scale=0.6]{Rewards_Double_Q_Learning_7}
+\includegraphics[scale=0.5]{Rewards_Double_Q_Learning_7}
+\includegraphics[scale=0.5]{Rewards_Q_Learning}
 \centering
 \end{figure}
-This is an \href{https://github.com/duoduocai-dot/csc498-project/blob/main/incorrect_double_q_learning_maximization_bias_example.mkv}{example video} of the agent playing the game, from  the same session. As it is seen from the end of the  video, the agent gets stuck in an infinite loop of bouncing the ball in the same pattern which happens to avoid the blocks. From the graph, it is clear that the agent was able to win the game in some episodes (from 17000-22000), but after, the rewards converged. What ended up happening is that at some point in an episode the agent picks an action that gives it a higher reward now, but not in the future. One reason for this is because the agent is essentially just trying to get as close to the ball as possible, from our reward model, we don't reward it when the ball hits a brick, and their is no brick representation in the state, so it's a partially observed state. So the agent is trying to center itself with the ball, but that doesn't guarantee that it will hit the ball in such a way that a brick will break.
+This is an \href{https://github.com/duoduocai-dot/csc498-project/blob/main/pictures_and_videos/incorrect_double_q_learning_maximization_bias_example.mkv}{example video} of the agent playing the game, from  the first graph. As it is seen from the end of the  video, the agent gets stuck in an infinite loop of bouncing the ball in the same pattern which happens to avoid the blocks. From the graph, it is clear that the agent was able to win the game in some episodes (from 17000-22000), but after, the rewards converged. What ended up happening is that at some point in an episode the agent picks an action that gives it a higher reward now, but not in the future. One reason for this is because the agent is essentially just trying to get as close to the ball as possible, from our reward model, we don't reward it when the ball hits a brick, and their is no brick representation in the state, so it's a partially observed state. So the agent is trying to center itself with the ball, but that doesn't guarantee that it will hit the ball in such a way that a brick will break.
 \\\\
 To fix this, we can add a more complex form of exploration, such that the agent can explore more when it gets close to the end or gets stuck in a loop of avoid bricks. Instead of just taking a max action.
 \\
 Or we can change our entire environment to go from a partially observed MDP to a fully observed one, modelling brick-layout, score, ball location/speed, paddle location, etc. But for this, the algorithms also get more complex, we will need to utilize Neural Networks to handle the full states.
 \\
 Another possible fix is to alter reward mechanics such that hitting a brick awards rewards. The reason we didn't do this initially is because the ball hitting is something that happens so much later after the paddle hits the ball that it was harming our training in the initial stages. I.e, the agent would get random rewards, but wouldn't be able to recreate it.
-\subsubsection{Generalized tests}
+\subsubsection{Generalization}
+Using the same agents trained in 3.2.1 section (all the algorithms trained on the same number of episodes and steps), we made generalization tests. In our environment we inbuilt several brick-layouts  that the game can play on. These are:
+\begin{figure}[H]
+\includegraphics[scale=0.2]{layout0}
+\includegraphics[scale=0.2]{layout1}
+\includegraphics[scale=0.2]{layout2}
+\includegraphics[scale=0.2]{layout3}
+\includegraphics[scale=0.2]{layout4}
+\includegraphics[scale=0.2]{layout5}
+\includegraphics[scale=0.2]{layout6}
+\includegraphics[scale=0.2]{layout7}
+\centering
+
+\end{figure}
 \subsubsection{Which Layout is best to train on?}
 We think that the layout best to train on is brick-layout number 1 (left). It is better than brick-layout 0 (right) because it allows for the ball to go in between bricks in a much earlier part of the episode than layout 0 allows. Thus the agent is able to learn more variations of ball locations and velocities.
 \begin{figure}[H]

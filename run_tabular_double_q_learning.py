@@ -15,7 +15,6 @@ with open('t_d_q_learning_saved_policy_values/saved_double_q_learning_policy.pkl
 with open('t_d_q_learning_saved_policy_values/saved_double_q_learning_q_values1.pkl', 'rb') as f:
     doubleQLearningAgent.q_values1 = pickle.load(f)
 
-
 with open('t_d_q_learning_saved_policy_values/saved_double_q_learning_q_values2.pkl', 'rb') as f:
     doubleQLearningAgent.q_values2 = pickle.load(f)
 

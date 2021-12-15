@@ -237,6 +237,9 @@ class Sarsa():
 
 
     def train(self):
+        breakout_env = Breakout()
+        breakout_env.make()
+
         breakout_env.reset()
 
         ballspeeds = list(breakout_env.speeds.values())
@@ -260,7 +263,7 @@ class Sarsa():
         plt.plot(rewards_)
         plt.ylabel('rewards')
         plt.xlabel('episodes')
-        plt.title("rewards for tabular Sarsa, episodes = "+str(episodes) + ", epsilon decay = 0.000013, steps = 20000")
+        plt.title("rewards for tabular Sarsa, episodes = "+str(episodes) + ", epsilon decay = 0.000026, steps = "+ str(self.steps) + ", brickLayout = " + str(breakout_env.brickLayout))
         plt.savefig('Rewards_Sarsa.png', bbox_inches='tight')
 
 
