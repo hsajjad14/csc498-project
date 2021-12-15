@@ -195,8 +195,13 @@ Using the same agents trained in 3.2.1 section (all the algorithms trained on th
 \includegraphics[scale=0.2]{layout6}
 \includegraphics[scale=0.2]{layout7}
 \centering
-
 \end{figure}
+The experiment we made to test generalization is \href{https://github.com/duoduocai-dot/csc498-project/blob/main/generalization_tests.py#L10}{here}. Essentially what it's doing is getting the trained agents from all 3 algorithms and running them across all layouts and measuring their score. Those algorithms were trained on layout1 (second layout in the top row). And along with them we included one more trained double Q-Learning agent which was trained for 100,000 episodes, and graphed the results. On the graph is also the max possible score achievable per layout as a reference to how well the algorithm does.
+\begin{figure}[H]
+\includegraphics[scale=0.6]{BrickLayouts_generalization_tests}
+\centering
+\end{figure}
+We can see both the Q-Learning and the best double Q-Learning algorithm do very well in generalizing across different layouts, both their scores are close the the maximum possible score.
 \subsubsection{Which Layout is best to train on?}
 We think that the layout best to train on is brick-layout number 1 (left). It is better than brick-layout 0 (right) because it allows for the ball to go in between bricks in a much earlier part of the episode than layout 0 allows. Thus the agent is able to learn more variations of ball locations and velocities.
 \begin{figure}[H]
@@ -204,17 +209,6 @@ We think that the layout best to train on is brick-layout number 1 (left). It is
 \includegraphics[scale=0.3]{bricklayout0}
 \centering
 \end{figure}
-
-
-Talk about
-\begin{itemize}
-\item epsilon choice and decay choice, step and episode size
-\item preformance of each algorithm
-\item maximization problem with Q-Learning, and how altering reward schema can fix it.
-\item How the above can be fixed with a different epsilon greedy approach (epsilon goes down to 0, then up to 1, then back down, repeats for n times, when it ends its at 0). This approach is to make sure there is enough exploration in the later regions of the game.
-\item comparing algorithms in generalized tests, also talk about generalized brick layouts
-\item Talk about which bricklayout is best to train on to maximize most generalization of agent (bricklayout1)
-\end{itemize}
 
 \subsection{Policy Gradient}
 talk about
