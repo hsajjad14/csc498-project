@@ -226,12 +226,29 @@ Other things we tried to solve this problem was by including exploration. We add
 Some other things we could try to fix this is by using momentum in the gradient update (\fnurl{although Adam optimizer used}{https://github.com/duoduocai-dot/csc498-project/blob/main/policy_gradient.py\#L55} should already be doing this). Another potential fix is to use the \fnurl{soft-actor critic algorithm}{https://arxiv.org/abs/1801.01290} which maintains stochasticity by having ample exploration. 
 
 \subsection{Deep Recurrent Q-Network}
-The deep recurrent Q-network has most of the ideas from the paper ..., to calulate the target function, we utilize a gated recurrent unit with one layer. Architecture: unidirectional, input size: 6 (observation space), one hidden layer of size 10, output size 3 (action space). In the forward pass, the computed value is then passed into a linear model. In the experience replay buffer, we sample sequences instead of single points.
+The deep recurrent Q-network has most of the ideas from the paper "Deep Recurrent Q-learning for Partially Observable MDPs" by Matthew Hausknecht and Peter Stone [3], because our example is partially observalble. To calculate the target function, we utilize a gated recurrent unit with one layer. \newline Architecture: unidirectional, input size: 6 (observation space), one hidden layer of size 10, output size 3 (action space). In the forward pass, the computed value is then passed into a linear model. In the experience replay buffer, we sample sequences instead of single points.
 \newline
 The resaon we use GRU: \newline
 \begin{itemize}
 \item Given that the problem is relatively simple, using LSTM is inefficient.
-\item The forget gate of LSTM is not useful in our case, because we don't need to skip any weak past frame and reuse them in later stages. 
+\item The forget gate of LSTM is not useful in our case, because we don't need to skip any weak past frame and reuse them in later stages
+\end{itemize}
+The main difference of our adapted approach compared to course material: \newline
+\begin{itemize}
+\item completely on-policy, there is no offline data collection.
+\item start to update the model from the 40000+ frame, (19000 frames in total) instead of learn from the beginning. This avoids the random and misleading results from beginning.
+\end{itemize}
+The result is not as good as the tabular settings, the score achieves 30-58 after the 100000+ frames. \newline
+\begin{figure}[H]
+Rewards from the last 10 episodes using fewest number of states (first bullet):\\
+\includegraphics[scale=0.5]{myRewards.PNG}
+\centering
+\end{figure}
+
+Here are some challenges: \newline
+\begin{itemize}
+\item The change in the weight matrix is too small to take effects (step size, update frequency).
+\item Difficult to embody actual meaning to the reset gate, update gate, sequence length. Like how many past frames are useful and when does the gate reset.
 \end{itemize}
 
 \subsection{Conclusion}

@@ -142,7 +142,7 @@ class Model(BaseAgent):
         #     param.grad.data.clamp_(-1, 1)
         self.optimizer.step()
         self.update_target_model()
-        self.save_td(loss.item(), frame)
+        # self.save_td(loss.item(), frame)
         # print("loss:", loss.item())
         self.save_sigma_param_magnitudes(frame)
 
