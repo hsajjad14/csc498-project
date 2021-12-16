@@ -164,7 +164,10 @@ class Breakout:
 
             if self.ball.y > 600:
                 # ball misses paddle
-                # print("missed paddle")
+                # print("-----------------missed paddle-----------------")
+                if self.score>1:
+                    print("your final score: ", self.score)
+
                 self.rewards -= 10
                 self.done = True
 
@@ -344,11 +347,3 @@ class Breakout:
             self.paddleUpdate()
             self.ballUpdate()
             self.render()
-
-# if __name__ == "__main__":
-    # Breakout().main()
-    # b_env = Breakout()
-    # b_env.make()
-    # while(100):
-    #     print(b_env.step(np.random.randint(3)))
-    #     b_env.render()

@@ -2,13 +2,14 @@ import numpy as np
 import pickle
 import os.path
 import csv
+import pickle
 
 import torch
 import torch.optim as optim
 
 
 class BaseAgent(object):
-    def __init__(self, config, env, log_dir='/tmp/gym'):
+    def __init__(self, config, env, log_dir='/tmp'):
         self.model=None
         self.target_model=None
         self.optimizer = None
@@ -28,19 +29,8 @@ class BaseAgent(object):
         return 0.5 * x.pow(2)
 
     def save_w(self):
-        torch.save(self.model.state_dict(), './saved_agents/model.dump')
-        torch.save(self.optimizer.state_dict(), './saved_agents/optim.dump')
-    
-    def load_w(self):
-        fname_model = "./saved_agents/model.dump"
-        fname_optim = "./saved_agents/optim.dump"
-
-        if os.path.isfile(fname_model):
-            self.model.load_state_dict(torch.load(fname_model))
-            self.target_model.load_state_dict(self.model.state_dict())
-
-        if os.path.isfile(fname_optim):
-            self.optimizer.load_state_dict(torch.load(fname_optim))
+        torch.save(self.model.state_dict(), 'model.dump')
+        torch.save(self.optimizer.state_dict(), 'optim.dump')
 
     def save_replay(self):
         pickle.dump(self.memory, open('./saved_agents/exp_replay_agent.dump', 'wb'))
@@ -63,14 +53,11 @@ class BaseAgent(object):
                     writer = csv.writer(f)
                     writer.writerow((tstep, sum_/count))
 
-    def save_td(self, td, tstep):
-        pass
-        # with open(os.path.join(self.log_dir, 'td.csv'), 'a') as f:
-        #     writer = csv.writer(f)
-        #     writer.writerow((tstep, td))
-
     def save_reward(self, reward):
         self.rewards.append(reward)
+        with open('rewards.pickle', 'wb') as handle:
+            pickle.dump(self.rewards, handle)
+
 
     def save_action(self, action, tstep):
         self.action_selections[int(action)] += 1.0/self.action_log_frequency

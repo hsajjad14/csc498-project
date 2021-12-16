@@ -4,9 +4,9 @@ import torch
 import torch.optim as optim
 
 from agents.BaseAgent import BaseAgent
-from networks.networks import DQN
+# from networks.networks import DQN
 from networks.network_bodies import AtariBody, SimpleBody
-from utils.ReplayMemory import ExperienceReplayMemory, PrioritizedReplayMemory
+# from utils.ReplayMemory import ExperienceReplayMemory, PrioritizedReplayMemory
 
 from timeit import default_timer as timer
 
@@ -100,7 +100,7 @@ class Model(BaseAgent):
         batch_state, batch_action, batch_reward, non_final_next_states, non_final_mask, empty_next_state_values, indices, weights = batch_vars
 
         #estimate
-        self.model.sample_noise()
+        # self.model.sample_noise()
         current_q_values = self.model(batch_state).gather(1, batch_action)
         
         #target
@@ -108,7 +108,7 @@ class Model(BaseAgent):
             max_next_q_values = torch.zeros(self.batch_size, device=self.device, dtype=torch.float).unsqueeze(dim=1)
             if not empty_next_state_values:
                 max_next_action = self.get_max_next_state_action(non_final_next_states)
-                self.target_model.sample_noise()
+                # self.target_model.sample_noise()
                 max_next_q_values[non_final_mask] = self.target_model(non_final_next_states).gather(1, max_next_action)
             expected_q_values = batch_reward + ((self.gamma**self.nsteps)*max_next_q_values)
 
@@ -131,26 +131,26 @@ class Model(BaseAgent):
         if frame < self.learn_start or frame % self.update_freq != 0:
             return None
 
+        # print("start prep minibatch...")
         batch_vars = self.prep_minibatch()
-
         loss = self.compute_loss(batch_vars)
-
         # Optimize the model
+        # print("start the model optimization...")
         self.optimizer.zero_grad()
         loss.backward()
-        for param in self.model.parameters():
-            param.grad.data.clamp_(-1, 1)
+        # for param in self.model.parameters():
+        #     param.grad.data.clamp_(-1, 1)
         self.optimizer.step()
-
         self.update_target_model()
         self.save_td(loss.item(), frame)
+        # print("loss:", loss.item())
         self.save_sigma_param_magnitudes(frame)
 
     def get_action(self, s, eps=0.1): #faster
         with torch.no_grad():
             if np.random.random() >= eps or self.static_policy or self.noisy:
                 X = torch.tensor([s], device=self.device, dtype=torch.float)
-                self.model.sample_noise()
+                # self.model.sample_noise()
                 a = self.model(X).max(1)[1].view(1, 1)
                 return a.item()
             else:
@@ -160,6 +160,7 @@ class Model(BaseAgent):
         self.update_count+=1
         self.update_count = self.update_count % self.target_net_update_freq
         if self.update_count == 0:
+            # print("update the target model to be model...")
             self.target_model.load_state_dict(self.model.state_dict())
 
     def get_max_next_state_action(self, next_states):
