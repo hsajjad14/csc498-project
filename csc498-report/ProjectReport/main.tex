@@ -233,6 +233,12 @@ The resaon we use GRU: \newline
 \item Given that the problem is relatively simple, using LSTM is inefficient.
 \item The forget gate of LSTM is not useful in our case, because we don't need to skip any weak past frame and reuse them in later stages. 
 \end{itemize}
+
+\subsection{Conclusion}
+In conclusion, If a problem's state space can be discretized, then it should be. The tabular algorithms that preformed the best on this problem were Q-Learning and double Q-Learning. When discretizing the problem, more states is usually better, however it takes longer to train. And if the problem can be solved with fewer states it is better to stick with that.
+When deciding the best game environment to train over for a general agent, it is better to pick one where the agent sees a variety of game states early, so it can learn more efficiently using fewer samples.\\\\
+Regarding Policy Gradient methods for this problem, they are overall not good. The action space is discrete and the state-space can be made discrete. So using Policy Gradient just over complicates the task. If you were to use policy gradient for this sort of problem, then use something like soft-actor critic with ample exploration, or implement an extensive exploration method. Also use entropy loss, to penalize the selection of actions with high-likelihood.  \\\\
+Furthermore, always pick a good reward schema, one such that the agent can directly measure how good an action is. Not a schema where an agent makes an action, and has to wait until later to learn if it was a good action or not.
 \bibliography{bibliography}
 
 \end{document}
